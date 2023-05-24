@@ -17,17 +17,10 @@ Vous répondez à toutes les questions. A l'issue de cette instruction est le fi
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "Mon premier serveur avec nodejs",
+  "description": "",
   "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@dev.glassworks.tech:hetic-mt1-p2023/backend/nodejs-api-server.git"
   },
   "author": "",
   "license": "ISC"
@@ -43,7 +36,7 @@ Le fichier `package.json` est l'indexe de votre projet. Il contient plusieurs in
 * `dependencies`: Les librairies tierces venant des dépôts node à inclure dans notre projet. Ce sont la liste essentiel pour tourner notre projet en production.
 * `devDependencies`: Les librairies supplémentaires pour compléter notre environnement de dev. Typiquement ce sont les librairies de test, ou des types à inclure (si on utilise TypeScript)
 
-Les entrées `dependencies` et `devDependencies` sont automatiquement gérés par la commende `npm`. En effet `npm` est le __"node package manager"__ et on l'utilise pour installer, mettre à jour, ou enlever les librairies.
+Les entrées `dependencies` et `devDependencies` sont automatiquement gérés par la commende `npm`. En effet `npm` est le **node package manager** et on l'utilise pour installer, mettre à jour, ou enlever les librairies.
 
 Par exemple, nous allons installer Express :
 
@@ -98,7 +91,7 @@ Les packages déployés par npm évolue en utilisant un système de versioning :
 
 * **Patch** : sont les corrections de bug, et ne change pas le comportement ou compatibilité de la librairie
 * **Version mineur** : Normalement retro-compatible dans la même version mineur, mais peut-être avec des refactoring ou des modifications (normalement ajouts) plus importants
-* **Version majeur** : Risque de casser votre projet, il y aura des __breaking changes__, modifications qui risque de casser votre code, par exemple, c~hanger l'API, enlever les fonctions obsolètes, etc.
+* **Version majeur** : Risque de casser votre projet, il y aura des __breaking changes__, modifications qui risque de casser votre code, par exemple, changer l'API, enlever les fonctions obsolètes, etc.
 
 Dans `package.json` nous pouvons exprimer les limites de `npm update`, en utilisant les symboles suivants : 
 
@@ -116,10 +109,10 @@ On peut aussi préciser la version majeur, et laisser `npm` choisir la version m
 
 ```
 # Install la toute dernière version de express@3.*.*
-npm install express^3.2
+npm install express@^3.2
 
 # Installer la toute dernière patch de express@4.18.*
-npm install express~4.18
+npm install express@~4.18
 ```
 
 ## Mon premier script avec NodeJS
@@ -202,6 +195,18 @@ Par exemple, on aimerait que notre code se lance automatiquement dès qu'on appo
 npm install nodemon --save-dev
 ```
 
+L'option `--save-dev` précise que ce dépendance n'est utile que pour l'environnement de développement. Justement, si on regarde `package.json`, on voit qu'il y a une nouvelle section qui s'appelle `devDependencies` :
+
+```json
+  ...
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+  ...
+```
+
+Ces dépendances sont ignorées lors de la mise en production. L'idée est d'optimiser l'artifact de production et exclure tous les modules qui ne sont pas utiles ou potentiellement risqués. 
+
 On modifie notre `package.json` afin d'utiliser `nodemon` au lieu de node :
 
 #### **package.json**
@@ -223,6 +228,6 @@ npm run hello
 Si on modifie `src/hello.js`, on vois que `nodemon` relance le script à chaque fois qu'on le sauvegarde. :fire: Pratique ! :fire:
 
 
-A noter : Si nodemon ne relance pas votre script après une modification, il faut ajouter l'option `-L` pour activer le _legacy polling_.
+A noter : Si nodemon ne relance pas votre script après une modification, il faut ajouter l'option `-L` pour activer le **legacy polling**.
 
 
