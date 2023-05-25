@@ -2,8 +2,7 @@
 
 Nous sommes prêts à initialiser notre projet NodeJS, et ajouter typescript.
 
-
-## Initialiser un nouveau projet 
+## Initialiser un nouveau projet
 
 Nous commençons des nouveaux projets node en initialisant le projet. Dans le terminal de VSCode :
 
@@ -31,12 +30,13 @@ Vous répondez à toutes les questions. A l'issue de cette instruction est le fi
 ## `package.json` et `npm`
 
 Le fichier `package.json` est l'indexe de votre projet. Il contient plusieurs informations utiles pour votre projet :
+
 * Son nom, sa version etc.
-* `scripts`: La liste de commandes possibles avec `npm run ...`. C'est ici où on va configurer comment notre code s'exécute, en mode dev ou prod.
+* `scripts`: La liste de commandes possibles avec `npm run ...`.&#x20;
 * `dependencies`: Les librairies tierces venant des dépôts node à inclure dans notre projet. Ce sont la liste essentiel pour tourner notre projet en production.
 * `devDependencies`: Les librairies supplémentaires pour compléter notre environnement de dev. Typiquement ce sont les librairies de test, ou des types à inclure (si on utilise TypeScript)
 
-Les entrées `dependencies` et `devDependencies` sont automatiquement gérés par la commende `npm`. En effet `npm` est le **node package manager** et on l'utilise pour installer, mettre à jour, ou enlever les librairies.
+Les entrées `dependencies` et `devDependencies` sont automatiquement gérés par la commande `npm`. En effet `npm` est le **node package manager** et on l'utilise pour installer, mettre à jour, ou enlever les librairies.
 
 Par exemple, nous allons installer Express :
 
@@ -46,7 +46,7 @@ npm install express
 
 On voit que `package.json` s'est mis à jour automatiquement :
 
-```json 
+```json
 {
   // ...
   "dependencies": {
@@ -91,16 +91,16 @@ Les packages déployés par npm évolue en utilisant un système de versioning :
 
 * **Patch** : sont les corrections de bug, et ne change pas le comportement ou compatibilité de la librairie
 * **Version mineur** : Normalement retro-compatible dans la même version mineur, mais peut-être avec des refactoring ou des modifications (normalement ajouts) plus importants
-* **Version majeur** : Risque de casser votre projet, il y aura des __breaking changes__, modifications qui risque de casser votre code, par exemple, changer l'API, enlever les fonctions obsolètes, etc.
+* **Version majeur** : Risque de casser votre projet, il y aura des **breaking changes**, modifications qui risque de casser votre code, par exemple, changer l'API, enlever les fonctions obsolètes, etc.
 
-Dans `package.json` nous pouvons exprimer les limites de `npm update`, en utilisant les symboles suivants : 
+Dans `package.json` nous pouvons exprimer les limites de `npm update`, en utilisant les symboles suivants :
 
-<figure><img src="../../.gitbook/assets/wheelbarrel-with-tilde-caret-white-bg-w1000.jpg" alt=""><figcaption></figcaption></figure>
-
+<figure><img src="../.gitbook/assets/wheelbarrel-with-tilde-caret-white-bg-w1000.jpg" alt=""><figcaption></figcaption></figure>
 
 [Source de l'image](https://bytearcher.com/goodies/semantic-versioning-cheatsheet/)
 
-Dans `package.json` si on voit: 
+Dans `package.json` si on voit:
+
 * un tilde `~` devant la version : on va fixer la version mineur, mais autoriser les mises à jours de la version patch
 * un caret `^` devant la version : on va fixer la version majeur, mais autoriser les mises à jours de la version mineur
 * aucune symbole devant la version : on ne va jamais mettre à jour la version
@@ -119,11 +119,9 @@ npm install express@~4.18
 
 Nous allons créer une nouveau fichier `src/hello.js` :
 
-{% code title="src/hello.js %}
 ```js
 console.log("Hello world");
 ```
-{% endcode %}
 
 Il est facile d'exécuter notre premier script avec la commande `node`:
 
@@ -133,15 +131,12 @@ node src/hello.js
 ```
 
 {% hint style="success" %}
-
-Pour info, `console.log` va émettre vers le `stdout`, et `console.error` vers le `stderr`. Vous pouvez donc intégrer un script node dans votre chaîne de commandes. 
-
+Pour info, `console.log` va émettre vers le `stdout`, et `console.error` vers le `stderr`. Vous pouvez donc intégrer un script node dans votre chaîne de commandes.
 {% endhint %}
-
 
 ### Exécuter comme un script shell
 
-On peut utiliser un *shebang* qui permet de rendre notre script exécuter comme n'importe quel script :
+On peut utiliser un _shebang_ qui permet de rendre notre script exécuter comme n'importe quel script :
 
 ```js
 #!/usr/bin/env node
@@ -173,6 +168,7 @@ La version plus classique de lancer un script node est en utilisant `package.jso
   },
 }
 ```
+{% endcode %}
 
 On lance notre script avec :
 
@@ -181,6 +177,7 @@ npm run hello
 ```
 
 Le champs `scripts` est très utile pour créer et configurer plusieurs façons de lancer notre code :
+
 * Lancer le serveur en mode développement
 * Lancer le serveur en mode production
 * Lancer un script d'utilité qui, par exemple agit de façon ponctuelle sur votre base de données
@@ -188,7 +185,6 @@ Le champs `scripts` est très utile pour créer et configurer plusieurs façons 
 * Lancer des outils de validation de votre code (linter, orthographe, etc)
 
 Par exemple, on aimerait que notre code se lance automatiquement dès qu'on apporte une modification. Pour cela, on va utiliser le package `nodemon` qui surveille notre base de code et relance le script dès qu'une modification est détectée :
-
 
 ```shell
 # Attention, nodemon est utilisé exclusivement pour nous aider en développement, donc on l'inclut seulement dans les devDependencies en précisant --save-dev
@@ -205,11 +201,12 @@ L'option `--save-dev` précise que ce dépendance n'est utile que pour l'environ
   ...
 ```
 
-Ces dépendances sont ignorées lors de la mise en production. L'idée est d'optimiser l'artifact de production et exclure tous les modules qui ne sont pas utiles ou potentiellement risqués. 
+Ces dépendances sont ignorées lors de la mise en production. L'idée est d'optimiser l'artifact de production et exclure tous les modules qui ne sont pas utiles ou potentiellement risqués.
 
 On modifie notre `package.json` afin d'utiliser `nodemon` au lieu de node :
 
 #### **package.json**
+
 ```json
 {
   // ...
@@ -227,7 +224,4 @@ npm run hello
 
 Si on modifie `src/hello.js`, on vois que `nodemon` relance le script à chaque fois qu'on le sauvegarde. :fire: Pratique ! :fire:
 
-
 A noter : Si nodemon ne relance pas votre script après une modification, il faut ajouter l'option `-L` pour activer le **legacy polling**.
-
-

@@ -2,11 +2,11 @@
 
 * [API](README.md)
 
-## Projet de développement
+## Javascript et Typescript
 
-* [Docker Dev Container](src/001/001-devcontainer.md)
-* [Projet NodeJS](src/001/002-projet-nodejs.md)
-* [Les essentiels de JS](src/001/003-js-essentiels.md)
-* [Le event-loop](src/001/005-event-loop.md)
-* [Typescript](src/001/010-typescript.md)
-* [Promise](src/001/015-promises.md)
+* [Docker Dev Container](javascript-et-typescript/001-devcontainer.md)
+* [Projet NodeJS](javascript-et-typescript/002-projet-nodejs.md)
+* [Les essentiels de JS](javascript-et-typescript/003-js-essentiels.md)
+* [Le Event-Loop](javascript-et-typescript/005-event-loop.md)
+* [Typescript](javascript-et-typescript/010-typescript.md)
+* [Promise](javascript-et-typescript/015-promises.md)

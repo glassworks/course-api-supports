@@ -26,15 +26,16 @@ Afin de contourner ce problème, la notion de **Promise** a été développé au
 
 > Un Promise est un objet qui pourrait produire soit une valeur dans le futur, soit une raison pourquoi elle n'aurait pas pu terminer.
 
-Un Promise est essentiellement un **constructor** qui va retourner un `object`  qui contient 3 fonctions :
-- `then` : une fonction qui prend un *callback* comme paramètre. Quand le promise termine (avec succès), le callback passé sera invoqué.
-- `catch`: une fonction qui prend un callback comma paramètre. Si jamais il y a une erreur ou une exception, ce callback sera invoqué à la place de celui de `then`
-- `finally`: une fonction qui prend un callback comma paramètre. Ce callback sera systématiquement appelé après le `then` ou le `catch`.
+Un Promise est essentiellement un **constructor** qui va retourner un `object` qui contient 3 fonctions :
 
+* `then` : une fonction qui prend un _callback_ comme paramètre. Quand le promise termine (avec succès), le callback passé sera invoqué.
+* `catch`: une fonction qui prend un callback comma paramètre. Si jamais il y a une erreur ou une exception, ce callback sera invoqué à la place de celui de `then`
+* `finally`: une fonction qui prend un callback comma paramètre. Ce callback sera systématiquement appelé après le `then` ou le `catch`.
 
-En construisant un Promise, nous passons un callback comme paramètre qui prend 2 paramètre:
-- la référence à une fonction `resolve`, à invoquer quand notre opération longue est complète
-- la référence à une fonction `reject`, à appeler dans le cas d'une erreur
+En construisant un Promise, nous passons un callback comme paramètre qui prend 2 paramètres :
+
+* la référence à une fonction `resolve`, à invoquer quand notre opération longue est complète
+* la référence à une fonction `reject`, à appeler dans le cas d'une erreur
 
 L'exemple suivant démontre la construction d'un Promise :
 
@@ -57,10 +58,9 @@ const p = new Promise(
 );
 ```
 
+Ici, on attend 1 seconde avant de résoudre le Promise. Regardez comment on invoque le callback `resolve` seulement dans le callback de l'opération `setTimeout`. Dans le cas d'une erreur, on invoque plutôt le callback `reject`.
 
-Ici, on attend 1 seconde avant de résoudre la promesse. Regardez comment on invoque le callback `resolve` seulement dans le callback de l'opération `setTimeout`. Dans le cas d'une erreur, on invoque plutôt le callback `reject`.
-
-Ce code fonctionnera tout seul, mais à priori on aimerait *enchaîner* des opérations après. On le fait avec la fonction `then` qui nous permet de préciser le callback à invoquer quand le Promise précédent se résout.
+Ce code fonctionnera tout seul, mais à priori on aimerait _enchaîner_ des opérations asynchrones après. On le fait avec la fonction `then` qui nous permet de préciser le callback à invoquer quand le Promise précédent se résout.
 
 ```js
 
@@ -91,7 +91,7 @@ Faites attention à retenir cette structure, parce que c'est la fondation pour l
 
 Nous allons essayer de charger un fichier de façon asynchrone avec les Promises :
 
-{% code title="src/promise-loadfile.ts %}
+{% code title="src/promise-loadfile.ts" lineNumbers="true" %}
 ```js
 /* En Typescript on importe les librairies avec "import" (et pas "require")
 * Notez comment, en VSCode, on peut récupérer des informations et auto-complète sur les fonctions et objets
@@ -152,9 +152,8 @@ loadFileAsync(FICHIER1)
       console.error("Oups, il y a eu une erreur !")
     }
   )
-
 ```
-{ %endcode% }
+{% endcode %}
 
 On lance ce code avec `ts-node` :
 
@@ -172,7 +171,7 @@ Vous avez sûrement remarqué que ce n'est pas très propre cet enchaînement de
 
 Enchaîner les `then` crée quand même du code chargé de callbacks, donc on a intégré du "syntactic sugar" (syntax sucré) qui permet d'exprimer une suite de Promise plus brièvement.
 
-D'abord, on marque une fonction avec le mot clé `async` : 
+D'abord, on marque une fonction avec le mot clé `async` :
 
 ```js
 const myFunc = async () => {
@@ -204,7 +203,7 @@ myFunc()
 
 Voici notre chargement de fichier modifié avec `async/await`.
 
-{% code title="src/promise-loadfile.ts %}
+{% code title="src/promise-async-await.ts" lineNumbers="true" %}
 ```js
 /* En Typescript on importe les librairies avec "import" (et pas "require")
 * Notez comment, en VSCode, on peut récupérer des informations et auto-complète sur les fonctions et objets
@@ -239,7 +238,6 @@ const loadFileAsync = (path: string): Promise<Buffer> => {
   );
 }
 
-
 /* On doit obligatoirement marquer une fonction avec "async" pour indiquer
 que la fonction retourne une Promise (c'est implicite). A l'intérieure, on 
 n'a juste à utiliser le mot clé "await" devant nos Promises, qui est l'équivalent 
@@ -247,7 +245,6 @@ n'a juste à utiliser le mot clé "await" devant nos Promises, qui est l'équiva
 
 Si on entoure le tout par try/catch, on retrouve la fonctionnalité de ".catch"
 */
-
 
 const exec = async() => {
   try {
@@ -270,16 +267,17 @@ const exec = async() => {
 exec();
 
 ```
-{ %endcode% }
+{% endcode %}
 
 Il y a 2 choses à retenir :
+
 * En marquant une fonction `async`, on dit que notre fonction retourne un objet de type "Promise". Ceci se voit avec typescript et VSCode.
 * Le mot clé `await` fait l'équivalent de ".then", et peut être utilisé sur toutes les Promises.
 
 De plus en plus de librairies offre des alternatifs aux callbacks en utilisant les Promises. Par exemple, la librairie `fs` fournit un alternatif compatible aux Promises :
 
-{% code title="src/promise-loadfile.ts %}
-```js
+{% code title="src/promise-async-await.ts" lineNumbers="true" %}
+```typescript
 // De plus en plus de librairies incluent aussi une version des fonctions
 // qui retournent des Promise. Il faut lire la documentation de la librairie en question
 import { readFile } from "fs/promises";
@@ -309,17 +307,13 @@ const exec = async() => {
 }
 
 exec();
-
 ```
-{ %endcode% }
+{% endcode %}
 
+## Exercice
 
-# Exercice
+Enveloppez la fonction "setTimeout" dans une fonction qui s'appelle `wait(seconds: number)`, qui prend comme valeur le nombre de secondes à attendre avant de continuer.
 
-Enveloppez la fonction "setTimeout" dans une fonction qui s'appelle "wait(seconds: number)", qui prend comme valeur le nombre de secondes à attendre avant de continuer.
-
-Ensuite utilisez cette fonction à plusieurs reprises afin rythmer bien l'emission des valeurs sur le stdout (le rythme de la symphonie n° 5 de Beethoven) : 
+Ensuite utilisez cette fonction à plusieurs reprises afin rythmer bien l'emission des valeurs sur le stdout (le rythme de la symphonie n° 5 de Beethoven) :
 
 Da - pause (0,33s) - Da - pause (0,33s) - Da - pause (0,33s) - Daaaaaaaaaa - pause (3s) etc.
-
-

@@ -1,8 +1,9 @@
-# L'essentiel de Javascript
+# Les essentiels de JS
 
 ## Variables
 
 Javascript n'oblige pas des types strictes, mais il y a quand même un certain nombre de types de données de base supportés :
+
 * `number` : une valeur numérique
 * `string` : une chaîne de caractères
 * `boolean` : une valeur boolean (soit `true`, soit `false`)
@@ -10,9 +11,7 @@ Javascript n'oblige pas des types strictes, mais il y a quand même un certain n
 * `array` : un tableau de valeurs de type simple ou object
 * `function` : une déclaration de fonction
 
-
-Le type d'une variable est, par défaut implicite et n'est pas imposé. 
-
+Le type d'une variable est, par défaut implicite et n'est pas imposé.
 
 ```js
 
@@ -73,10 +72,9 @@ const myvariable = {
 console.log(myvariable.c.aa);
 ```
 
-
 ## Functions
 
-Javascript est essentiellement un language [fonctionnel](https://fr.wikipedia.org/wiki/Programmation_fonctionnelle) dans lequel la **fonction** est très haut placé.
+Javascript est essentiellement un language [fonctionnel](https://fr.wikipedia.org/wiki/Programmation\_fonctionnelle) dans lequel la **fonction** est très haut placé.
 
 On define une fonction avec le mot clé `function` :
 
@@ -92,9 +90,9 @@ On invoque une fonction en citant son nom suivi par des parenthèses (dans leque
 testFn("abcd");
 ```
 
-Ceci est normal pour la plupart des language de programmation. 
+Ceci est normal pour la plupart des languages de programmation.
 
-La différence en JS est qu'une fonction peut-être aussi traité comme une *valeur*, en l'affectant à une variable :
+La différence en JS est qu'une fonction peut-être aussi traité comme une _valeur_, en l'affectant à une variable :
 
 ```js
 // Une fonction est aussi une valeur, on peut l'affecter à une variable !
@@ -108,7 +106,7 @@ Cela veut dire que je pourrais définir une fonction, ensuite passer la référe
 
 ### Comportement dynamic
 
-Le fait de pouvoir *affecter* une fonction à une variable nous permet d'adapter le comportement de notre code en fonction des conditions dynamiques.
+Le fait de pouvoir _affecter_ une fonction à une variable nous permet d'adapter le comportement de notre code en fonction des conditions dynamiques.
 
 ```js
 const dayFn = function() {
@@ -129,11 +127,11 @@ const greetingFn = hour < 17 ? dayFn : nightFn;
 greetingFn();
 ```
 
+### Encapsulation
 
-### Encapsulation 
+Intelligemment utilisés, les fonctions nous permettent d'encapsuler différents données et fonctions qui sont liées :
 
-Intelligemment utilisés, les fonctions nous permettes d'encapsuler différents données et fonctions qui sont liées :
-
+{% code title="Exemple d'encapsulation" lineNumbers="true" %}
 ```js
 function MyService(name, age) {
 
@@ -151,12 +149,19 @@ function MyService(name, age) {
 
 const resA = new MyService("Kevin", 40);
 ```
+{% endcode %}
 
 On commence par définir la fonction `MyService`, qui va encapsuler le nom et age d'une personne.
 
-Nous invoquons cette fonction à l'aide du mot clé `new`  qui va traiter la fonction comme `constructor`. C'est à dire : un nouvel `object` est crée comme résultat de la fonction. Ensuite on exécute les contenus de la fonction. Par défaut, cet `object` est retourné.
+Nous invoquons cette fonction à l'aide du mot clé `new` (ligne 15) qui va traiter la fonction comme `constructor`. C'est à dire : un nouvel `object` est crée comme résultat de la fonction, même si à priori la fonction ne retourne pas de valeur (notez qu'il n'y a pas de mot-clé `new`).
 
-En exécutant la fonction, à chaque fois qu'on cite `this`, on parle de l'objet crée lors de la construction (**l'instance**). Dans l'exemple, on crée une nouvelle clé `age` sur l'objet `this`, et on l'affecte la valeur de `40`. Notez aussi, qu'on déclare une fonction avec la clé `publicFn` qui pourrait être invoqué plus tard, et qui va utiliser les valeurs sur le même objet `this`.
+Au sein de cette fonction on peut ajouter et modifier les valeurs de cet objet (ou **l'instance**) crée par le `constructor`, en utilisant le mot clé `this` pour l'adresser (comme on voit sur la ligne 3, 4 et 10.
+
+Dans l'exemple, on crée une nouvelle clé `age` sur l'objet `this`, et on l'affecte la valeur de `40`. Notez aussi, qu'on déclare une fonction avec la clé `publicFn` qui pourrait être invoqué plus tard, et qui va utiliser les valeurs sur le même objet `this`.
+
+{% hint style="info" %}
+Une grande différence de Javascript contre des languages type C# ou Java est la possibilité de définit des fonctions dans les fonctions !
+{% endhint %}
 
 Par exemple :
 
@@ -170,12 +175,11 @@ console.log(resB.publicFn());
 // Ceci est une fonction publique de Sylvie qui a 32 ans
 ```
 
-
 ## Callbacks
 
 Si on peut affecter une fonction à une variable, on peut également passer une fonction comme paramètre à une autre fonction.
 
-L'utilité de cette technique est le suivant : *exécuter  la fonction `fn`, et je vous passe un référence à une autre fonction à invoquer quand c'est fini*
+L'utilité de cette technique est le suivant : _exécuter la fonction `fn`, et je vous passe un référence à une autre fonction à invoquer quand c'est fini_
 
 ```js
 
@@ -187,6 +191,7 @@ function outerFn(callback) {
   callback();
 }
 
+// Ici, on passe une fonction comme paramètre à `outerFn`
 outerFn(function(param) {
   console.log("Ceci est le callback");
 });
@@ -201,18 +206,16 @@ outerFn(fn);
 Essayez cet exemple. Notez qu'on peut modifier l'acheminement du code en passant une fonction différente à chaque fois.
 
 {% hint style="warning" %}
-
 Dans le contexte de l'exemple précédent, pourquoi le code suivant n'est pas valide ?
 
 ```js
 outerFn(fn());
 ```
-
 {% endhint %}
 
-## Fonctions fmèches (arrow functions)
+## Fonctions flèches (_arrow functions_)
 
-Jusqu'a présent nous avons utilisés le mot clé `function` afin de déclarer nos fonctions. 
+Jusqu'au présent nous avons utilisés le mot clé `function` afin de déclarer nos fonctions.
 
 Il y a une autre manière de déclarer des fonctions qui est parfois plus brève :
 
@@ -222,15 +225,17 @@ const myFn = (name, age) => {
 }
 ```
 
-Il y a beaucoup de différences entre une fonction **régulière** et une fonction **anonyme**  (fonction flèche):
-- Une fonction flèche ne construit pas d'objet `this`. Le mot clé `this` réfère à celui qui existait déjà (le parent) lors de la création de la fonction
-- Une fonction flèche ne peut pas être invoqué avant d'être déclaré. En effet, les effets de *hoisting* ne s'appliquent pas.
-- ... (cherchez sur le web les autres différences !)
+En brève, on précise juste la liste de paramètres suivi pas la flèche (=>) suivi par le corps de la fonction.&#x20;
 
+Il y a beaucoup de différences entre une fonction **régulière** et une fonction **anonyme** (fonction flèche):
 
-Les fonctions flèches sont très utiles par contre pour les callbacks. Cela permet de créer facilement une fonction callback pour quoi le context (l'objet `this`) est le même que son emplacement dans le code (moins de confusion).
+* Une fonction flèche ne construit pas d'objet `this`. Le mot clé `this` réfère à celui qui existait déjà (le parent) lors de la création de la fonction
+* Une fonction flèche ne peut pas être invoqué avant d'être déclaré. En effet, les effets de _hoisting_ ne s'appliquent pas.
+* ... (cherchez sur le web les autres différences !)
 
-Nous pouvons reformuler l'exemple précédent des callbacks avec des fonctions flèches : 
+Les fonctions flèches sont très utiles par contre pour les callbacks. Cela permet de créer facilement une fonction callback pour que le context (l'objet `this`) est le même que son emplacement dans le code (moins de confusion).
+
+Nous pouvons reformuler l'exemple précédent des callbacks avec des fonctions flèches :
 
 ```js
 
@@ -242,6 +247,7 @@ function outerFn(callback) {
   callback();
 }
 
+// Au lieu d'utiliser `function`, on utiliser une fonction flèche
 outerFn((param) => {
   console.log("Ceci est le callback");
 });
