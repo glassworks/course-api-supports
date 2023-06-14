@@ -13,8 +13,6 @@
   
 ## API
 
-* [Les fondamentaux de HTTP]
-* [Un API REST]
 * [Express](002-api/300-express.md)
 * [Le SGBDR]
 * [Exercice]
