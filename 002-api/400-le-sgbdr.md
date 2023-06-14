@@ -1,13 +1,15 @@
-# Intégration du SGBDR
+# Le SGBDR
+
+## Intégration du SGBDR
 
 On veut maintenant établir une connexion à une base de données, et commencer à ajouter et supprimer les lignes à travers de notre API.
 
-## Dev Container et `docker-compose.yml`
+### Dev Container et `docker-compose.yml`
 
 On peut directement inclure une instance d'un SGBDR à notre dev-container grace à docker :
 
+{% code title="docker-compose.dev.yml" lineNumbers="true" %}
 ```yml
-
   ...
 
   dbms:
@@ -28,15 +30,18 @@ On peut directement inclure une instance d'un SGBDR à notre dev-container grace
     networks:
       - api-network
 ```
+{% endcode %}
 
 Il faut faire le suivant :
+
 * Ajouter les lignes dessus à `docker-compose.dev.yml`
-* Ajouter le dossier `dbms` 
+* Ajouter le dossier `dbms`
 * Ajouter le fichier `mariadb.cnf` dans le dossier `dbms`. [Trouver un exemple ici](https://docs.glassworks.tech/sgbdr/operations/001-operations-docker#options-de-production-mariadb)
 * Rebuilder votre DevContainer dans VSCode.
 * Le SGBDR est désormais disponible.
 
 Docker gère automatiquement les connexions et ports pour nous :
+
 * Le nom d'hôte est le nom du service (`dbms`)
 * Le port est automatiquement mappé par docker, pas besoin de le préciser dans notre code
 
@@ -83,7 +88,7 @@ on user for each row set new.email = lower(trim(new.email));
 
 ```
 
-## Integration NodeJS
+### Integration NodeJS
 
 Nous utilisons la librairie `mysql2` pour communiquer avec notre base de données.
 
@@ -91,6 +96,7 @@ Normalement notre API va ouvrir une connexion unique auprès du SGBDR pour chaqu
 
 Moi je préfère créer une classe qui enveloppe l'objet principal, pour ne pas répéter du code :
 
+{% code title="DB.ts" lineNumbers="true" %}
 ```ts
 import mysql, { Pool } from 'mysql2/promise';
 
@@ -121,13 +127,15 @@ export class DB {
 
 }
 ```
+{% endcode %}
 
 Ici, on crée une variable static, et on initialise notre **pool** avec les coordonnées tirés de l'environnement (ou des valeurs par défaut).
 
-## Opérations CRUD
+### Opérations CRUD
 
 Voici un exemple d'un set de **endpoints** pour la gestion de l'utilisateur (code source entière disponible [ici](https://dev.glassworks.tech:18081/courses/api/api-supports/-/tree/master/exemples/mysql)).
 
+{% code title="routes/user.ts" lineNumbers="true" %}
 ```ts
 import { NextFunction, Request, Response, Router } from "express";
 import { OkPacket, RowDataPacket } from 'mysql2';
@@ -136,8 +144,6 @@ import { ICreateResponse } from '../types/ICreateResponse';
 import { IIndexQuery, IIndexResponse } from '../types/IIndexQuery';
 import { ITableCount } from '../types/ITableCount';
 import { IUser, IUserRO } from '../types/IUser';
-
-
 
 const routerIndex = Router({ mergeParams: true });
 
@@ -210,13 +216,13 @@ routerUser.use(routerIndex);
 export const ROUTES_USER = routerUser;
 
 ```
-
+{% endcode %}
 
 Il y a plusieurs choses à noter, comme discuté dans les sections suivantes.
 
-### L'utilisation des types
+#### L'utilisation des types
 
-Une force de Typescript est le fait de pouvoir contrôler les types du début à la fin, même avec les **génériques*. 
+Une force de Typescript est le fait de pouvoir contrôler les types du début à la fin, même avec les \*_génériques_.
 
 En effet, Express est écrit avec les **génériques**. Nous pouvons donc préciser la structure des types qui entre dans le corps du message, dans le params query, et à renvoyer dans la réponse :
 
@@ -233,6 +239,7 @@ Quand on va récupérer `request.query`, par exemple, l'objet typescript retourn
 
 Comment on précise un type ? Voici quelques exemples.
 
+{% code title="types/IUser.ts" lineNumbers="true" %}
 ```ts
 // Définition d'un structure IUser
 // A noter, le ? veut dire que le champ est optionnel
@@ -249,8 +256,9 @@ export interface IUser {
 // Ici, on rend tous les champs "lecture seul". Typescript ne va pas autoriser l'affectation des champs
 export type IUserRO = Readonly<IUser>;
 ```
+{% endcode %}
 
-
+{% code title="types/IIndexQuery.ts" lineNumbers="true" %}
 ```ts
 export interface IIndexQuery {
   page?: string;
@@ -270,9 +278,9 @@ export interface IIndexResponse<T> {
   rows: T[];
 }
 ```
+{% endcode %}
 
-
-### Le formatage des requêtes SQL
+#### Le formatage des requêtes SQL
 
 Comme toutes les librairies, on évite l'injection SQL en utilisant des fonctionnalités pour échapper les données :
 
@@ -292,17 +300,18 @@ const user: IUser = {
 const data = await db.query<OkPacket>("insert into user set ?", user);
 ```
 
-# Exercice 1 : CRUD
+## Exercice 1 : CRUD
 
-Complétez les autres fonctions CRUD pour un utilisateur : 
+Complétez les autres fonctions CRUD pour un utilisateur :
+
 * `GET /user/<userId>` : récupérer juste la ligne de l'utilisateur en format `IUser`
 * `PUT /user/<userId>` : mettre à jour une ligne précise
 * `DELETE /user/<userId>` : supprimer l'utilisateur
 
-
-# Exercice 2 : Erreurs
+## Exercice 2 : Erreurs
 
 Essayez de rentrer des mauvaises informations via Postman :
+
 * Créer un utilisateur doublon
 * Essayer de passer un champ qui n'est pas une colonne dans la base
 * Passer du texte dans le query param de la requête index (pour limit et offset)
@@ -311,6 +320,7 @@ Essayez de rentrer des mauvaises informations via Postman :
 Pour l'instant, on reçois un message moche (pas en json) et pas très parlant dans Postman.
 
 Ajoutez un middleware qui gère les erreurs :
+
 * Renvoyez plutôt du json
 * Avoir au moins le champs suivants :
   * `code` : le code HTTP approprié
@@ -318,8 +328,8 @@ Ajoutez un middleware qui gère les erreurs :
     * `401` : pas autorisé
     * `404` : élément pas trouvé
     * `500` : erreur interne (dernier recours)
-  * `structured` : un champ plus libre mais plus structuré qui permettrait de localiser l'erreur coté front. Exemple : 
-    * `params-invalid` 
+  * `structured` : un champ plus libre mais plus structuré qui permettrait de localiser l'erreur coté front. Exemple :
+    * `params-invalid`
     * `connection-error`
     * `auth/unknown-email`
   * `message`: un message humain décrivant l'erreur
@@ -327,11 +337,10 @@ Ajoutez un middleware qui gère les erreurs :
 
 Astuce : il faut dire à express d'utiliser votre handler d'erreur avec `app.use(...)`. Votre handler doit avoir 4 paramètres dans le callback, le premier étant l'objet d'erreur.
 
-# Exercice 3 : Factoring
+## Exercice 3 : Factoring
 
 Essayez d'ajouter une autre table à votre base, e.g. `repas` (vous pouvez vous inspirer de l'application nutrition).
 
-Ajoutez des endpoints CRUD pour cette table. 
+Ajoutez des endpoints CRUD pour cette table.
 
 Essayez au maximum de factoriser votre code. Est-ce qu'il y a des éléments qu'on peut réutiliser pour les opération CRUD classiques ?
-
