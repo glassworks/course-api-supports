@@ -1,8 +1,11 @@
 # Express
 
+## Express
+
 Express est une librairie simple mais puissant pour la création d'un serveur avec NodeJS.
 
 Personnellement j'aime beaucoup pour les raisons suivants :
+
 * Elle est **non-opinionated**, c'est à dire, je peux structurer comme je veux mes applications, sans avoir une structure imposée sur moi (comme Symfony etc). Ceci ouvre la possibilité d'erreurs, bien sur, mais offre plus de flexibilité aussi.
 * Elle supporte toutes les fonctions d'un serveur :
   * Serve des fichiers statics
@@ -15,8 +18,7 @@ Personnellement j'aime beaucoup pour les raisons suivants :
   * On peut ajouter des `middleware` où on veut pour paramétrer entièrement nos end-points.
   * Facilement préciser le format des réponses
 
-
-## Inclure express
+### Inclure express
 
 ```sh
 npm install express
@@ -29,8 +31,7 @@ Selon la librairie, on devrait parfois installer les définitions Typescript de 
 
 De plus en plus de librairies incluent par défaut ses définitions dans la librairie de base, mais pas encore Express.
 
-
-## Le serveur le au plus simple
+### Le serveur le au plus simple
 
 Voici un exemple d'un serveur extrêmement basique :
 
@@ -65,7 +66,6 @@ app.listen(PORT,
 
 J'ai crée une ligne dans `package.json` qui permet de lancer mon serveur avec `npm run server` :
 
-
 ```json
   ...
   "scripts": {
@@ -76,20 +76,22 @@ J'ai crée une ligne dans `package.json` qui permet de lancer mon serveur avec `
 ```
 
 En lançant le serveur, je peux donc ouvrir un navigateur aux liens suivants :
+
 * [http://localhost:5050/helo](http://localhost:5050/helo)
 * [http://localhost:5050/public/grunter.JPG](http://localhost:5050/public/grunter.JPG)
 
-## Fondamentaux de Express
+### Fondamentaux de Express
 
 Comment Express fonctionne ?
 
 D'abord, Express écoute des connexions TCP entrantes (en réalité, Express n'est juste une enveloppe pour les fonctionnalités NodeJS qui aide à créer des Sockets, écouter sur des ports etc).
 
 Quand une nouvelle connexion est ouverte, la requête HTTP est interprétée pour ses différents composants :
-- La **METHODE** demandé par HTTP, `get`, `put`, `post`, etc.
-- Le **PATH**, ou le chemin indique dans le URL (relatif au nom de demain ou adresse IP de votre serveur)
 
-Express gère la requête via des *callbacks*. Avant de lancer le serveur, nous allons dire à Express quelles méthodes HTTP à implémenter sur quels chemins, en fournissant une fonction qui est sensé gérer la requête.
+* La **METHODE** demandé par HTTP, `get`, `put`, `post`, etc.
+* Le **PATH**, ou le chemin indique dans le URL (relatif au nom de demain ou adresse IP de votre serveur)
+
+Express gère la requête via des _callbacks_. Avant de lancer le serveur, nous allons dire à Express quelles méthodes HTTP à implémenter sur quels chemins, en fournissant une fonction qui est sensé gérer la requête.
 
 Par exemple, le code suivant :
 
@@ -103,7 +105,7 @@ app.get('/helo',
 
 Ici, on précise que, pour une requête http de type `GET`, sur le chemin relatif `/helo`, il faut exécuter la fonction flèche que j'ai passé comme 2ème paramètre.
 
-### Vocabulaire
+#### Vocabulaire
 
 On construit notre API en fournissant l'ensemble de callbacks sur les méthodes et les chemins.
 
@@ -141,7 +143,7 @@ app.get('/helo',
 );
 ```
 
-Dans l'exemple dessus, on précise 3 fonctions flèches à exécuter dans l'ordre pour le endpoint. Les fonctions intermédiaires s'appellent des **middleware**, car elles s'exécutent *au milieu*.
+Dans l'exemple dessus, on précise 3 fonctions flèches à exécuter dans l'ordre pour le endpoint. Les fonctions intermédiaires s'appellent des **middleware**, car elles s'exécutent _au milieu_.
 
 A noter : chaque **middleware** doit obligatoirement appeler la fonction `next()` qui est passé comme paramètre au callback. Cette fonction `next()` permet à Express de continuer avec la chaîne de middleware. L'idée est qu'on peut, par exemple, lancer un chargement longue d'un fichier, et on ne continue pas avec les middlewares suivants, tant que le le fichier n'est pas chargée en mémoire.
 
@@ -186,20 +188,19 @@ app.post('/user',
 Ici, on réutilise le même **middleware**, `authorise`, sur plusieurs **endpoints**.
 
 {% hint style="success" %}
-
 Comme exercice, essayer les différents endpoints. Modifier l'autorisation afin de retourner une erreur (`authenticated = false`), et vérifier le comportement observé dans le navigateur.
-
 {% endhint %}
 
-### Paramètres des handlers
+#### Paramètres des handlers
 
 Chaque **handler** peut prendre plusieurs paramètres :
+
 1. (facultatif) `error`: le message d'erreur. Si le **handler** a 4 paramètres, il serait utilisé dans le cas d'erreur (voir en bas).
 2. `request` : un objet qui représente la requête HTTP, qui donne accès aux en-têtes (**header**), les paramètres **query** (dans l'URL), les paramètres extraits de l'URL (**params**), et les données du corps du message (**body**)
-1. `response` : un objet qui représente la réponse qui sera renvoyée, ses en-têtes etc. Cet objet contient des fonctions qui permet de renvoyer une réponse immédiate, gérer son format, gérer le code HTTP de la réponse, etc.
-2. `next`: un callback à utiliser si on créé un **middleware**, c'est à dire une fonction qui traite la requête mais qui ne va pas retourner une réponse. Il faut soit appeler `next()` pour signaler à Express de passer dans le prochain **handler**, soit `next(err)` pour signaler à Express qu'on a rencontrer une erreur.
+3. `response` : un objet qui représente la réponse qui sera renvoyée, ses en-têtes etc. Cet objet contient des fonctions qui permet de renvoyer une réponse immédiate, gérer son format, gérer le code HTTP de la réponse, etc.
+4. `next`: un callback à utiliser si on créé un **middleware**, c'est à dire une fonction qui traite la requête mais qui ne va pas retourner une réponse. Il faut soit appeler `next()` pour signaler à Express de passer dans le prochain **handler**, soit `next(err)` pour signaler à Express qu'on a rencontrer une erreur.
 
-### L'objet `Request`
+#### L'objet `Request`
 
 Quand on gère une requête HTTP, souvent on modifie le comportement selon les données passées avec la requête. Ces données peuvent arriver via différents chemins. Considérer la requête HTTP suivant :
 
@@ -236,6 +237,7 @@ app.post('/user/:userId/profile',
 ```
 
 Ici, on envoie une requête de type `POST` au chemin `/user/:userId/profile`. Avec cette requête il y a d'autres informations :
+
 * Des **URL parameters**, notamment des morceaux du chemin identifiés par des deux-points. Dans notre cas, c'est le `:userId`. En effet, ce morceau de chemin peut être dynamic, et par exemple, précise une identifiant unique pour notre utilisateur. C'est ainsi qu'on construit des URLs uniques pour chaque **ressource** de notre API Rest. On accède à ces valeurs via le `params` objet sur le `Request`.
 * Des **query parameters**, notamment ceux qui se trouvent après le point d'interrogation sur le chemin. Dans l'exemple, on précise `country=france`, et on récupère ces valeurs via le `query` objet sur le `Request`
 * Le **body** ou le corps du message. Ce sont les données envoyés après la ligne blanche qui suit les en-têtes. Le body peut être en forme de JSON, un formulaire, ou bien juste des données binaires.
@@ -243,17 +245,13 @@ Ici, on envoie une requête de type `POST` au chemin `/user/:userId/profile`. Av
 
 Attention ! Les différents types de méthode HTTP supportent (ou pas) la présence d'un corps de message :
 
-|Méthode|Headers|Params|Query Params|Body|
-|--|--|--|--|--|
-|GET||||
-|PUT||||
-|POST||||
-|DELETE||||
+<table><thead><tr><th width="133">Méthode</th><th width="105">Headers</th><th width="100">Params</th><th width="156">Query Params</th><th>Body</th></tr></thead><tbody><tr><td>GET</td><td><span data-gb-custom-inline data-tag="emoji" data-code="2705">✅</span></td><td><span data-gb-custom-inline data-tag="emoji" data-code="2705">✅</span></td><td><span data-gb-custom-inline data-tag="emoji" data-code="2705">✅</span></td><td><span data-gb-custom-inline data-tag="emoji" data-code="274c">❌</span></td></tr><tr><td>PUT</td><td><span data-gb-custom-inline data-tag="emoji" data-code="2705">✅</span></td><td><span data-gb-custom-inline data-tag="emoji" data-code="2705">✅</span></td><td><span data-gb-custom-inline data-tag="emoji" data-code="2705">✅</span></td><td><span data-gb-custom-inline data-tag="emoji" data-code="2705">✅</span></td></tr><tr><td>POST</td><td><span data-gb-custom-inline data-tag="emoji" data-code="2705">✅</span></td><td><span data-gb-custom-inline data-tag="emoji" data-code="2705">✅</span></td><td><span data-gb-custom-inline data-tag="emoji" data-code="2705">✅</span></td><td><span data-gb-custom-inline data-tag="emoji" data-code="2705">✅</span></td></tr><tr><td>DELETE</td><td><span data-gb-custom-inline data-tag="emoji" data-code="2705">✅</span></td><td><span data-gb-custom-inline data-tag="emoji" data-code="2705">✅</span></td><td><span data-gb-custom-inline data-tag="emoji" data-code="2705">✅</span></td><td><span data-gb-custom-inline data-tag="emoji" data-code="274c">❌</span></td></tr></tbody></table>
 
-### Exemple
+#### Exemple
 
 Le suivant est un exemple d'un mini API qui rassemble tous les éléments présentés ci-dessus.
 
+{% code title="" lineNumbers="true" %}
 ```ts
 import Express, { NextFunction, Request, Response } from "express";
 import { json } from "body-parser";
@@ -343,16 +341,17 @@ app.listen(PORT,
 );
 
 ```
+{% endcode %}
 
 Prenez note de :
+
 * La possibilité d'enchaîner les **middleware**
 * L'utilisation de la fonction `json` de la fonction `body-parser`, utilisé comme **middleware** global (avec `app.use(...)`). Ce middleware sert à parser automatiquement le corps de messages en tant que JSON.
 * La possibilité d'utiliser les middleware `async`
-* La pattern try/catch avec la fonction `next()` 
+* La pattern try/catch avec la fonction `next()`
 * L'utilisation des différentes valeurs dans `request`, comme `params`, `query`, etc.
 
-
-## Tester les endpoints
+### Tester les endpoints
 
 Il est possible d'utiliser des outils comme `curl` pour tester votre endpoint :
 
@@ -360,26 +359,24 @@ Il est possible d'utiliser des outils comme `curl` pour tester votre endpoint :
 curl -X POST localhost:5050/user/1234/update 
 ```
 
-En générale, je préfère utiliser [Postman](https://www.postman.com/downloads/) : 
+En générale, je préfère utiliser [Postman](https://www.postman.com/downloads/) :
 
 <figure><img src="../.gitbook/assets/postman.png" alt=""><figcaption></figcaption></figure>
 
-Cet outil permet de configurer et tester vos endpoints. 
+Cet outil permet de configurer et tester vos endpoints.
 
 {% hint style="success" %}
-
 **Exercice**
 
-Téléchargez Postman et configurez un test pour le endpoint `/user/:userId/update`. 
-- Observez les headers
-- Essayez d'envoyer des paramètres **query** (dans l'url, après le `?`)
-- Essayez d'envoyer du json dans le **body**
-- Essayer à ne pas passer un paramètre `:userId`
+Téléchargez Postman et configurez un test pour le endpoint `/user/:userId/update`.
 
+* Observez les headers
+* Essayez d'envoyer des paramètres **query** (dans l'url, après le `?`)
+* Essayez d'envoyer du json dans le **body**
+* Essayer à ne pas passer un paramètre `:userId`
 {% endhint %}
 
-
-# Exercice
+## Exercice
 
 Créer un nouveau projet "from-scratch", en essayant de tester vos compétences en dev-containers, nodejs, typescript, expressjs, etc.
 
@@ -398,8 +395,7 @@ DELETE /calc/hypot
 
 ```
 
-
-## Router
+### Router
 
 Il est possible de créer aussi des `Router`, un objet qui regroupe un set de routes, qu'on peut attacher comme middleware à l'arborescence :
 
@@ -433,13 +429,13 @@ POST /user/:userId
 
 Dans l'exemple on attache un router qui commence à gérer les opérations CRUD au chemin `/user`. On commence à voir qu'il serait possible (avec un peu d'intelligence) de créer un set générique de **handler** pour gérer les opérations CRUD, et les attacher aux différents points dans la hiérarchie.
 
+#### Exemple avec Router
 
-### Exemple avec Router
-
-Nous aimerions séparer nos différentes routes en fichiers différents. 
+Nous aimerions séparer nos différentes routes en fichiers différents.
 
 D'abord, on va créer une sous-branche de notre API qui gère l'utilisateur.
 
+{% code title="middleware/user.ts" lineNumbers="true" %}
 ```ts
 import { NextFunction, Request, Response, Router} from "express";
 import { authorizeUser } from './authorize-user.middleware';
@@ -515,9 +511,11 @@ routerUser.use('/:userId', routerSimple);
 export const ROUTES_USER = routerUser;
 
 ```
+{% endcode %}
 
-Ensuite, on peut assembler notre API : 
+Ensuite, on peut assembler notre API :
 
+{% code title="server.ts" lineNumbers="true" %}
 ```ts
 import Express from "express";
 import { ROUTES_USER } from './middleware/user';
@@ -541,7 +539,9 @@ app.listen(PORT,
   }
 );
 ```
+{% endcode %}
 
 A noter :
+
 * On peut utiliser le mot clé `export` d'un fichier typescript afin de le rendre accessible de l’extérieur du fichier, et l'inclure dans un autre fichier.
 * Le fichier qui concerne les endpoints du User est agnostique à sa position dans l'arborescence. On l'attache avec `app.use()` en construisant notre API.

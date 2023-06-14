@@ -10,9 +10,9 @@
 * [Le Event-Loop](001-javascript-et-typescript/005-event-loop.md)
 * [Typescript](001-javascript-et-typescript/010-typescript.md)
 * [Promise](001-javascript-et-typescript/015-promises.md)
-  
+
 ## API
 
 * [Express](002-api/300-express.md)
-* [Le SGBDR](002-api/400-sgbdr.md)
-* [Exercice](002-API/500-exercice.md)
+* [Le SGBDR](api/le-sgbdr.md)
+* [Exercice](api/exercice.md)
