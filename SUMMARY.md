@@ -14,5 +14,5 @@
 ## API
 
 * [Express](002-api/300-express.md)
-* [Le SGBDR](api/le-sgbdr.md)
-* [Exercice](api/exercice.md)
+* [Le SGBDR](002-api/400-le-sgbdr.md)
+* [Exercice](002-api/500-exercice.md)
