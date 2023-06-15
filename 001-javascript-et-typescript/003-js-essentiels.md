@@ -160,7 +160,7 @@ Au sein de cette fonction on peut ajouter et modifier les valeurs de cet objet (
 Dans l'exemple, on crée une nouvelle clé `age` sur l'objet `this`, et on l'affecte la valeur de `40`. Notez aussi, qu'on déclare une fonction avec la clé `publicFn` qui pourrait être invoqué plus tard, et qui va utiliser les valeurs sur le même objet `this`.
 
 {% hint style="info" %}
-Une grande différence de Javascript contre des languages type C# ou Java est la possibilité de définit des fonctions dans les fonctions !
+Une grande différence de Javascript contre des languages type C# ou Java est la possibilité de définir des fonctions dans les fonctions !
 {% endhint %}
 
 Par exemple :
