@@ -517,9 +517,8 @@ Ensuite, on peut assembler notre API :
 
 {% code title="server.ts" lineNumbers="true" %}
 ```ts
-import Express from "express";
+import Express, { json } from "express";
 import { ROUTES_USER } from './middleware/user';
-import { json } from 'body-parser';
 
 // Récupérer le port des variables d'environnement ou préciser une valeur par défaut
 const PORT = process.env.PORT || 5050;
@@ -530,6 +529,7 @@ const app = Express();
 // L'appli parse le corps du message entrant comme du json
 app.use(json());
 
+// Accrocher les routes CRUD de l'utilisateur à la hierarchie
 app.use('/user', ROUTES_USER);
 
 // Lancer le serveur

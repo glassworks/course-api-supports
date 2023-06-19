@@ -24,7 +24,7 @@ Nous commençons donc par créer ce dossier dans notre dossier de travail, et en
 {% code title=".devcontainer/devcontainer.json" lineNumbers="true" %}
 ```json
 {
-  "name": "NodeJS Boilerplate API",
+  "name": "NodeJS API",
   // Pointer vers notre docker-compose.dev.yml
   "dockerComposeFile": [
     "../docker-compose.dev.yml"
@@ -34,16 +34,18 @@ Nous commençons donc par créer ce dossier dans notre dossier de travail, et en
   // Le dossier de travail précisé dans Dockerfile.dev
   "workspaceFolder": "/home/dev",
   // Set *default* container specific settings.json values on container create.
-  "settings": {},
-  // Quelques extensions VSCode à inclure par défaut pour notre projet
-  "extensions": [
-    "pmneo.tsimporter",
-    "stringham.move-ts",
-    "rbbit.typescript-hero",
-    "ms-vscode.vscode-typescript-tslint-plugin",
-    "streetsidesoftware.code-spell-checker-french"
-  ],
-  "forwardPorts": [ ]
+  "customizations": {
+    "settings": {},
+    "extensions": [
+      "pmneo.tsimporter",
+      "stringham.move-ts",
+      "rbbit.typescript-hero",
+      "ms-vscode.vscode-typescript-tslint-plugin",
+      "streetsidesoftware.code-spell-checker-french"
+    ]
+  },
+  // Quelques extensions VSCode à inclure par défaut pour notre projet 
+  "forwardPorts": [ 5050 ]
 }
 ```
 {% endcode %}
@@ -86,25 +88,13 @@ FROM node:18
 # Attention, le chemin source est rélative à l'emplacement du fichier docker-compose
 COPY ./docker/sources.list /etc/apt/sources.list
 
-ARG USERNAME=dev
-ARG USER_UID=1001
-ARG USER_GID=$USER_UID
-
 # Créer l'utilisateur et son groupe, installer des paquets
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \    
-    && apt-get update \        
+RUN apt-get update \        
     && apt-get install -y sudo \
     && apt-get install -y mycli \
     && apt-get install -y tzdata \    
     && npm install -g typescript \
-    && npm install -g ts-node \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
-
-
-# Changer le user à dev
-USER $USERNAME
+    && npm install -g ts-node
 
 # Fixer le fuseau horaire
 ENV TZ Europe/Paris
@@ -114,6 +104,7 @@ ENV SHELL /bin/bash
 
 # Le repertoire maison par défaut
 WORKDIR /home/dev
+
 RUN /bin/bash
 ```
 {% endcode %}

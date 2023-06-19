@@ -92,11 +92,15 @@ on user for each row set new.email = lower(trim(new.email));
 
 Nous utilisons la librairie `mysql2` pour communiquer avec notre base de données.
 
+```bash
+npm install mysql2
+```
+
 Normalement notre API va ouvrir une connexion unique auprès du SGBDR pour chaque requête en cours. Ceci peut-être lourd et longue, donc le créateur de la librairies à prévu les **connection pools**. C'est à dire, on va essayer de réutiliser les connexions déjà ouvertes.
 
 Moi je préfère créer une classe qui enveloppe l'objet principal, pour ne pas répéter du code :
 
-{% code title="DB.ts" lineNumbers="true" %}
+{% code title="utility/DB.ts" lineNumbers="true" %}
 ```ts
 import mysql, { Pool } from 'mysql2/promise';
 
@@ -135,15 +139,14 @@ Ici, on crée une variable static, et on initialise notre **pool** avec les coor
 
 Voici un exemple d'un set de **endpoints** pour la gestion de l'utilisateur (code source entière disponible [ici](https://dev.glassworks.tech:18081/courses/api/api-supports/-/tree/master/exemples/mysql)).
 
-{% code title="routes/user.ts" lineNumbers="true" %}
+{% code title="routes/User.ts" lineNumbers="true" %}
 ```ts
 import { NextFunction, Request, Response, Router } from "express";
 import { OkPacket, RowDataPacket } from 'mysql2';
-import { DB } from '../../classes/DB';
+import { DB } from '../utility/DB';
 import { ICreateResponse } from '../types/ICreateResponse';
-import { IIndexQuery, IIndexResponse } from '../types/IIndexQuery';
-import { ITableCount } from '../types/ITableCount';
-import { IUser, IUserRO } from '../types/IUser';
+import { IIndexQuery, IIndexResponse, ITableCount } from '../types/IIndexQuery';
+import { IUser, IUserRO } from '../model/IUser';
 
 const routerIndex = Router({ mergeParams: true });
 
@@ -214,7 +217,6 @@ const routerUser = Router({ mergeParams: true });
 routerUser.use(routerIndex);
 
 export const ROUTES_USER = routerUser;
-
 ```
 {% endcode %}
 
@@ -239,7 +241,9 @@ Quand on va récupérer `request.query`, par exemple, l'objet typescript retourn
 
 Comment on précise un type ? Voici quelques exemples.
 
-{% code title="types/IUser.ts" lineNumbers="true" %}
+D'abord, nous allonw reproduire le schéma de nos données en Typescript. Voici, par exemple, le schema de notre table `User` représenté en Typescript :
+
+{% code title="model/IUser.ts" lineNumbers="true" %}
 ```ts
 // Définition d'un structure IUser
 // A noter, le ? veut dire que le champ est optionnel
@@ -258,8 +262,15 @@ export type IUserRO = Readonly<IUser>;
 ```
 {% endcode %}
 
+Nous allons préciser aussi des types retournées par nos interrogations avec la base SQL.
+
+La première interrogation est du type **indexe**, où on cherche plusieurs lignes avec pagination. Nous précisions la requête et la réponse :
+
 {% code title="types/IIndexQuery.ts" lineNumbers="true" %}
 ```ts
+/**
+ * Paramètres de la requête de type **indexe**, notamment pour la pagination.
+ */
 export interface IIndexQuery {
   page?: string;
   limit?: string;  
@@ -277,8 +288,28 @@ export interface IIndexResponse<T> {
   total: number;
   rows: T[];
 }
+
+/**
+ * Structure retourné par MySQL quand on fait une requête de type `count(*)` 
+ */
+export interface ITableCount {
+  total: number;
+}
 ```
 {% endcode %}
+
+Ensuite, pour la requête de **creation** d'une ligne :
+
+
+{% code title="types/ICreateResponse.ts" lineNumbers="true" %}
+```ts
+export interface ICreateResponse {
+  id: number;
+}
+```
+{% endcode %}
+
+
 
 #### Le formatage des requêtes SQL
 
@@ -300,13 +331,54 @@ const user: IUser = {
 const data = await db.query<OkPacket>("insert into user set ?", user);
 ```
 
+### Accrocher les routes à la hierarchie
+
+On compose notre application principale par les routes qu'on vient de créer :
+
+{% code title="server.ts" lineNumbers="true" %}
+```ts
+import Express, { json } from "express";
+import { ROUTES_USER } from "./routes/User";
+
+// Récupérer le port des variables d'environnement ou préciser une valeur par défaut
+const PORT = process.env.PORT || 5050;
+
+// Créer l'objet Express
+const app = Express();
+
+// L'appli parse le corps du message entrant comme du json
+app.use(json());
+
+// Accrocher les routes CRUD de l'utilisateur à la hierarchie
+app.use('/user', ROUTES_USER);
+
+// Lancer le serveur
+app.listen(PORT,
+  () => {
+    console.info("API Listening on port " + PORT);
+  }
+);
+```
+{% endcode %}
+
+Notez bien la ligne `app.use('/user', ROUTES_USER);`.
+
+{% hint style="success" %}
+Si vous ne l'avez pas encore fait, ajouter la ligne `"forwardPorts": [ 5050 ]` à votre fichier `.devcontainer/devcontainer.json`. Ceci permet à votre server d'être accessible en dehors de votre container VSCode.
+
+Testez les deux endpoints avec PostMan :
+* `GET http://localhost:5050/user`
+* `POST http://localhost:5050/user`
+{% endhint %}
+
+
 ## Exercice 1 : CRUD
 
 Complétez les autres fonctions CRUD pour un utilisateur :
 
-* `GET /user/<userId>` : récupérer juste la ligne de l'utilisateur en format `IUser`
-* `PUT /user/<userId>` : mettre à jour une ligne précise
-* `DELETE /user/<userId>` : supprimer l'utilisateur
+* `GET /user/:userId` : récupérer juste la ligne de l'utilisateur en format `IUser`
+* `PUT /user/:userId` : mettre à jour une ligne précise
+* `DELETE /user/:userId` : supprimer l'utilisateur
 
 ## Exercice 2 : Erreurs
 
