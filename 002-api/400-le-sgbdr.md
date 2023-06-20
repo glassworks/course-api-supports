@@ -390,18 +390,18 @@ La solution entière se trouve [ici](https://dev.glassworks.tech:18081/courses/a
 
 On commence par créer un **Router** dans express qui gère le sous-route `/:userId` :
 
-{% code title="routes/User.ts" lineNumbers="true" %}
 ```ts
 const routerSingle = Router({ mergeParams: true });
 
 // Router user existe déjà, on ajoute la sous-route
 routerUser.use('/:userId', routerSingle);
 ```
-{% code %}
+
 
 Ensuite, gérons les différentes méthodes.
 
-{% code title="routes/User.ts" lineNumbers="true" %}
+La méthode `GET /:userId` : 
+
 ```ts
 routerSingle.get<{ userId: string }, IUserRO, {}>('',
   async (request, response, next: NextFunction) => {
@@ -424,9 +424,9 @@ routerSingle.get<{ userId: string }, IUserRO, {}>('',
   }
 );
 ```
-{% code %}
 
-{% code title="routes/User.ts" lineNumbers="true" %}
+La méthode `PUT /:userId` : 
+
 ```ts
 routerSingle.put<{ userId: string }, IUpdateResponse, IUser>('',
   async (request, response, next: NextFunction) => {
@@ -453,9 +453,9 @@ routerSingle.put<{ userId: string }, IUpdateResponse, IUser>('',
   }
 );
 ```
-{% code %}
 
-{% code title="routes/User.ts" lineNumbers="true" %}
+La méthode `DELETE /:userId` : 
+
 ```ts
 routerSingle.delete<{ userId: string }, IDeleteResponse, {}>('',
   async (request, response, next: NextFunction) => {
@@ -481,7 +481,7 @@ routerSingle.delete<{ userId: string }, IDeleteResponse, {}>('',
   }
 );
 ```
-{% code %}
+
 
 </details>
 
