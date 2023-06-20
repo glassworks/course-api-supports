@@ -331,7 +331,7 @@ const user: IUser = {
 const data = await db.query<OkPacket>("insert into user set ?", user);
 ```
 
-### Accrocher les routes à la hierarchie
+### Accrocher les routes à la hiérarchie
 
 On compose notre application principale par les routes qu'on vient de créer :
 
@@ -379,6 +379,109 @@ Complétez les autres fonctions CRUD pour un utilisateur :
 * `GET /user/:userId` : récupérer juste la ligne de l'utilisateur en format `IUser`
 * `PUT /user/:userId` : mettre à jour une ligne précise
 * `DELETE /user/:userId` : supprimer l'utilisateur
+
+Créez une suite de tests dans Postman afin de valider votre API.
+
+<summary>Solution</summary>
+
+La solution entière se trouve [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/001-basic-crud-routes-express).
+
+On commence par créer un **Router** dans express qui gère le sous-route `/:userId` :
+
+{% code title="routes/User.ts" lineNumbers="true" %}
+```ts
+const routerSingle = Router({ mergeParams: true });
+
+// Router user existe déjà, on ajoute la sous-route
+routerUser.use('/:userId', routerSingle);
+```
+{% code %}
+
+Ensuite, gérons les différentes méthodes.
+
+{% code title="routes/User.ts" lineNumbers="true" %}
+```ts
+routerSingle.get<{ userId: string }, IUserRO, {}>('',
+  async (request, response, next: NextFunction) => {
+    try {
+      // ATTENTION ! Valider que le userId est valable ?
+      const userId = request.params.userId;
+
+      const db = DB.Connection;
+      // Récupérer les lignes
+      const data = await db.query<IUserRO[] & RowDataPacket[]>("select userId, familyName, givenName, email from user where userId = ?", [userId]);      
+
+      // ATTENTION ! Que faire si le nombre de lignes est zéro ?
+      const res = data[0][0];
+        
+      response.json(res);
+
+    } catch (err: any) {
+      next(err);
+    }
+  }
+);
+```
+{% code %}
+
+{% code title="routes/User.ts" lineNumbers="true" %}
+```ts
+routerSingle.put<{ userId: string }, IUpdateResponse, IUser>('',
+  async (request, response, next: NextFunction) => {
+    try {
+      // ATTENTION ! Valider que le userId est valable ?
+      const userId = request.params.userId;
+      const body = request.body;
+
+      const db = DB.Connection;
+      // Récupérer les lignes
+      const data = await db.query<OkPacket>(`update user set ? where userId = ?`, [body, userId]);
+
+      // Construire la réponse
+      const res = {
+        id: userId,
+        rows: data[0].affectedRows
+      }
+        
+      response.json(res);
+
+    } catch (err: any) {
+      next(err);
+    }
+  }
+);
+```
+{% code %}
+
+{% code title="routes/User.ts" lineNumbers="true" %}
+```ts
+routerSingle.delete<{ userId: string }, IDeleteResponse, {}>('',
+  async (request, response, next: NextFunction) => {
+    try {
+      // ATTENTION ! Valider que le userId est valable ?
+      const userId = request.params.userId;
+      const db = DB.Connection;
+
+      // Récupérer les lignes
+      const data = await db.query<OkPacket>(`delete from user where userId = ?`, [ userId ]);      
+
+      // Construire la réponse
+      const res = {
+        id: userId,
+        rows: data[0].affectedRows
+      }
+        
+      response.json(res);
+
+    } catch (err: any) {
+      next(err);
+    }
+  }
+);
+```
+{% code %}
+
+</details>
 
 ## Exercice 2 : Erreurs
 
