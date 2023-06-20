@@ -224,7 +224,7 @@ Il y a plusieurs choses à noter, comme discuté dans les sections suivantes.
 
 #### L'utilisation des types
 
-Une force de Typescript est le fait de pouvoir contrôler les types du début à la fin, même avec les \*_génériques_.
+Une force de Typescript est le fait de pouvoir contrôler les types du début à la fin, même avec les **génériques**.
 
 En effet, Express est écrit avec les **génériques**. Nous pouvons donc préciser la structure des types qui entre dans le corps du message, dans le params query, et à renvoyer dans la réponse :
 
@@ -381,6 +381,8 @@ Complétez les autres fonctions CRUD pour un utilisateur :
 * `DELETE /user/:userId` : supprimer l'utilisateur
 
 Créez une suite de tests dans Postman afin de valider votre API.
+
+<details>
 
 <summary>Solution</summary>
 
