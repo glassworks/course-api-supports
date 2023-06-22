@@ -514,10 +514,118 @@ Ajoutez un middleware qui gère les erreurs :
 
 Astuce : il faut dire à express d'utiliser votre handler d'erreur avec `app.use(...)`. Votre handler doit avoir 4 paramètres dans le callback, le premier étant l'objet d'erreur.
 
-## Exercice 3 : Factoring
+<details>
+
+<summary>Solution</summary>
+
+La solution entière se trouve [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/001-basic-crud-routes-express).
+
+D'abord, on crée une classe qui dérive de la classe générique de Javascript : `Error` 
+
+```ts
+import { ErrorCode } from './ErrorCode';
+import { IApiError } from './IApiError';
+import { StructuredErrors } from './StructuredErrors';
+
+
+export class ApiError {
+  constructor(public httpCode: ErrorCode, public structuredError: StructuredErrors, public errMessage: string, public errDetails?: any) {
+  }
+
+  get json(): IApiError {
+    return {
+      code: this.httpCode,
+      structured: this.structuredError,
+      message: this.errMessage,
+      details: this.errDetails
+    }
+  }
+}
+
+```
+
+Cette classe contient notamment une fonction permettant d'exporter l'erreur en format JSON selon la description de ce problème. Les `code` et `structured` sont les énumérations des différents possibilités :
+
+
+```ts
+// Les numéros de d'erreur standard de HTTP
+export enum ErrorCode {
+  NotFound = 404,
+  Unauthorized = 403,
+  BadRequest = 400,
+  TooManyRequests = 429,
+  InternalError = 500
+}
+```
+
+```ts
+// Les types d'erreur connus par notre API, permettant au consommateur de plus facile comprend ce qui s'est passé
+export type StructuredErrors = 
+  // SQL
+  'sql/failed' |  
+  'sql/not-found' |
+
+  // Crud
+  'validation/failed' | 
+    
+  // Authorization
+  'auth/unknown-email' |
+
+
+  // Default
+  'internal/unknown'
+;
+```
+
+Ensuite, nous allons rédiger un **handler** (middleware) qui prend 4 paramètres pour que Express l'utilise pour gérer des erreurs :
+
+
+```ts
+import { NextFunction, Request, Response } from 'express';
+import { ApiError } from '../utility/Error/ApiError';
+import { ErrorCode } from '../utility/Error/ErrorCode';
+
+
+export const DefaultErrorHandler = async (error: any, req: Request, res: Response, next: NextFunction) => {
+
+  console.log(error);
+  console.log(error.constructor.name);
+
+  let err = new ApiError(ErrorCode.InternalError, 'internal/unknown', 'An unknown internal error occurred');
+    
+  if (!!error) {
+    if (error instanceof ApiError) {
+      err = error;
+    } 
+    else if (!!error.sql) {
+      // Ceci est une erreur envoyé par la base de données. On va supposer une erreur de la part de l'utilisateur
+      // A faire : il est peut-être recommandé d'avoir un handler dédié aux erreurs SQL pour mieux trier celles qui sont de notre faute, et celles la faute de l'utilisateur.
+      err = new ApiError(ErrorCode.BadRequest, 'sql/failed', error.message, {
+        sqlState: error.sqlState,
+        sqlCode: error.code
+      });      
+      // A noter : on ne renvoie pas le SQL pour ne pas divulger les informations secrets
+    } else {
+      if (error.message) {
+        err.errMessage = error.message;
+      }
+    }
+  }
+  console.log(err.json);
+
+  res.status(err.httpCode).json(err.json);    
+}
+```
+
+Notez les paramètres de notre `DefaultErrorHandler`. On accepte comme premier paramètre une erreur inconnue. Ensuite, on construit l'erreur formaté à l'aide de notre classe `ApiError`. Enfin, on renvoie une réponse avec le code HTTP et le json représentant l'erreur.
+
+
+</details>
+
+## Exercice 3 : Remanier
 
 Essayez d'ajouter une autre table à votre base, e.g. `repas` (vous pouvez vous inspirer de l'application nutrition).
 
 Ajoutez des endpoints CRUD pour cette table.
 
-Essayez au maximum de factoriser votre code. Est-ce qu'il y a des éléments qu'on peut réutiliser pour les opération CRUD classiques ?
+Essayez au maximum de remanier votre code. Est-ce qu'il y a des éléments qu'on peut réutiliser pour les opération CRUD classiques ?
