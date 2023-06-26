@@ -90,7 +90,7 @@ on user for each row set new.email = lower(trim(new.email));
 
 ### Integration NodeJS
 
-Nous utilisons la librairie `mysql2` pour communiquer avec notre base de données.
+Nous utilisons la librairie [`mysql2`](https://www.npmjs.com/package/mysql2) pour communiquer avec notre base de données.
 
 ```bash
 npm install mysql2
@@ -371,6 +371,35 @@ Testez les deux endpoints avec PostMan :
 * `POST http://localhost:5050/user`
 {% endhint %}
 
+## Transactions
+
+Regardez la documentation pour la librairie `mysql2`. Vous allez remarquer des fonctions suivants :
+
+- `beginTransaction()`
+- `commit()`
+- `rollback()`
+
+Ce sont des fonctions qui emettent simplement des commandes equivalents en SQL auprès de notre SGBDR.
+
+Vous pouvez donc facilement gérer la cohérence de vos opérations d'écriture en utilisant ces fonctions.
+
+```ts
+  
+  const db = DB.Connection;   
+  
+  await db.beginTransaction();
+  try {
+
+    // Effectuer vos opérations
+
+    // Essayer de les commit
+    await db.commit();
+  } catch {
+    // S'il y a eu une exception, rollback
+    await db.rollback();
+  }
+
+```
 
 ## Exercice 1 : CRUD
 

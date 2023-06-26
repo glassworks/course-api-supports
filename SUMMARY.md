@@ -11,8 +11,11 @@
 * [Typescript](001-javascript-et-typescript/010-typescript.md)
 * [Promise](001-javascript-et-typescript/015-promises.md)
 
-## API
+## Les bases de l'API
 
 * [Express](002-api/300-express.md)
 * [Le SGBDR](002-api/400-le-sgbdr.md)
-* [Exercice](002-api/500-exercice.md)
+
+## Securisation de l'API
+* [Identité et autorisation](003-security/001-autorisation.md)
+* [Validation des données](003-security/010-validation.md)
