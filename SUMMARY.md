@@ -19,3 +19,5 @@
 ## Securisation de l'API
 * [Identité et autorisation](003-security/001-autorisation.md)
 * [Validation des données](003-security/010-validation.md)
+
+* [HTTPS](003-security/050-https.md)
