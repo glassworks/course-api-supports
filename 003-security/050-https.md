@@ -7,6 +7,9 @@ Nous allons sécuriser notre API en utilisant un **reverse proxy** :
 - On utilise un logiciel de serveur web (ex. nginx ou apache) qui fait déjà très bien la tâche de gérer des connexions https. Ce serveur va accepter des connexions entrantes sur le protocole https (normalement le port 443), les déchiffrer, et les rediriger vers notre API.
 - Notre API NodeJS va écouter sur un port sur notre réseau interne (pas accessible au public). Il accepte ls connexions de notre serveur Apache.
 
+
+> Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/004-https)
+
 ## Un reverse proxy en local
 
 Commençons par tester l'utilisation de nginx et cette notion de reverse-proxy en local.
