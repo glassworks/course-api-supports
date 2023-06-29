@@ -23,3 +23,6 @@
 
 ## Documentation
 * [Documentation](004-docs/001-documentation.md)
+
+## Gestion des fichiers
+* [Fichiers](005-files/001-fichiers.md)
