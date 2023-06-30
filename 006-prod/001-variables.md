@@ -33,13 +33,13 @@ services:
       - DB_USER=api-stage
       - DB_PASSWORD=api-stage-password
       - DB_DATABASE=mtdb_stage     
-      - AWS_ACCESS_KEY_ID=SCWTY6B680E3QQ9WM2V5
-      - AWS_SECRET_ACCESS_KEY=18856bfe-8260-4cfd-8802-389f943deccf
+      - AWS_ACCESS_KEY_ID=
+      - AWS_SECRET_ACCESS_KEY=
       - STORAGE_REGION=fr-par
       - STORAGE_ENDPOINT=https://s3.fr-par.scw.cloud
       - STORAGE_BUCKET=object-storage-playground
-      - MJ_APIKEY=650c4a928026033d089089cc09e870f2
-      - MJ_APISECRET=69f7bdf5eaa69818892bb4e3828569cc
+      - MJ_APIKEY=
+      - MJ_APISECRET=
       - MJ_EMAIL_FROM=kevin@nguni.fr
       - MJ_EMAIL_NAME=Kevin
     networks:
