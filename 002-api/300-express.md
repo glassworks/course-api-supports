@@ -31,7 +31,7 @@ Selon la librairie, on devrait parfois installer les définitions Typescript de 
 
 De plus en plus de librairies incluent par défaut ses définitions dans la librairie de base, mais pas encore Express.
 
-### Le serveur le au plus simple
+### Le serveur le plus simple
 
 Voici un exemple d'un serveur extrêmement basique :
 
