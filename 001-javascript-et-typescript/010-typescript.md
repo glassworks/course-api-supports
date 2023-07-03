@@ -66,7 +66,7 @@ En réalité, Typescript impose une étape de **transpilation** dans laquelle le
 Installez le package `typescript`, en développement seulement (car notre code final serait du JS transpilé)
 
 ```
-npm install typescript --save-dev
+npm install -g typescript --save-dev
 ```
 
 Ceci installe typescript comme dependence nécessaire pour transpiler notre projet, et sera nécessaire quand on commence à créer nos images Docker pour production.
