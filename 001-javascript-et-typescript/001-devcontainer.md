@@ -91,6 +91,7 @@ COPY ./docker/sources.list /etc/apt/sources.list
 # Créer l'utilisateur et son groupe, installer des paquets
 RUN apt-get update \        
     && apt-get install -y sudo \
+    && apt-get install -y less \
     && apt-get install -y mycli \
     && apt-get install -y tzdata \    
     && npm install -g typescript \
@@ -109,7 +110,7 @@ RUN /bin/bash
 ```
 {% endcode %}
 
-Enfin, remarquez que le Dockerfile remplace un fichier dans /etc/apt/sources.list par une version dans docker/sources.list. C'est la liste de dépôts Ubuntu duquel on charge les paquets connus par apt. Pour fonctionner dans l'école (sans être bloque) on est obligé de passer par des miroirs français :&#x20;
+Enfin, remarquez que le Dockerfile remplace un fichier dans /etc/apt/sources.list par une version dans docker/sources.list. C'est la liste de dépôts Ubuntu duquel on charge les paquets connus par apt. Pour fonctionner dans l'école (sans être bloque) on est obligé de passer par des miroirs français :
 
 {% code title="docker/sources.list" lineNumbers="true" %}
 ```
@@ -127,33 +128,33 @@ deb http://ftp.fr.debian.org/debian bullseye-updates main
 ```
 {% endcode %}
 
-Si jamais vous avez un souci de version (et vous n'êtes pas à l'école) vous pouvez décommenter les dernières lignes pour utiliser les dépots officiaux.&#x20;
+Si jamais vous avez un souci de version (et vous n'êtes pas à l'école) vous pouvez décommenter les dernières lignes pour utiliser les dépots officiaux.
 
 Nous sommes prêts à lancer notre Dev Container. Vérifiez bien la structure de votre projet VSCode.
 
-<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
 
 Vous pouvez ensuite lancer votre Dev Container en appuyant sur **F1**, et puis **Dev Containers : Rebuild and Reopen in Container**.
 
-<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
 
 Une fois lancé, ouvrez un nouveau terminal.
 
-Vous allez voir que NodeJS est déjà installé :&#x20;
+Vous allez voir que NodeJS est déjà installé :
 
 ```bash
 node -v
 # v18.13.0
 ```
 
-Au passage, nous avons installés **mycli** aussi, car on va travailler avec un SGBDR :&#x20;
+Au passage, nous avons installés **mycli** aussi, car on va travailler avec un SGBDR :
 
 ```bash
  mycli --version
  # Version: 1.23.2
 ```
 
-Pour utiliser **typescript**, nous avons aussi ajouté **ts-node** et **typescript** comme commandes globales :&#x20;
+Pour utiliser **typescript**, nous avons aussi ajouté **ts-node** et **typescript** comme commandes globales :
 
 ```bash
 ts-node -v
