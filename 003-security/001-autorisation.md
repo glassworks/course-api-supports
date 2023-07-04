@@ -4,9 +4,9 @@ Normalement dans un API fermé, nous allons empêcher l'accès aux utilisateurs 
 
 Comme pour la sécurisation d'une installation Linux, il y a plusieurs facettes à la sécurisation d'un API :
 
-- identité
-- ressource
-- droits
+* identité
+* ressource
+* droits
 
 ## Identité
 
@@ -24,25 +24,25 @@ Le principe distillé est le suivant :
 4. Le client de l'utilisateur doit désormais fournir ce jeton avec chaque requête
 5. A la reception d'une requête, l'API doit valider le jeton, et rejeter la requête si le jeton n'est pas présent ou n'est pas valable, ou bien si l'utilisateur n'a pas le droit d'acceder à la ressource demandée
 
-### Prouver son identité 
+### Prouver son identité
 
 Comment l'utilisateur peut prouver son identité ?
 
-- Un mot de passe connu uniquement par l'utilisateur
-- Une valeur biométrique physique de l'utilisateur (emprunt digital, iris, identification visage, etc.)
+* Un mot de passe connu uniquement par l'utilisateur
+* Une valeur biométrique physique de l'utilisateur (emprunt digital, iris, identification visage, etc.)
 
 La solution d'un mot de passe est compliqué pour plusieurs raisons :
 
-- Un mot de passe trop simple est facile à deviner grace aux algorithmes simples (attaque en force brute)
-- Un utilisateur a tendance à oublier son mot de passe complexe. Il réutilise donc le même mot de passe partout
-- Nous sommes obligés de stocker le mot de passe dans notre base de données. 
-  - Si on est hacké, on divulge le mot de passe de nos utilisateurs au hackeur.  
-  - A ce moment là, le hackeur aurait potentiellement accès à tous les comptes utilisant le mot de passe partagé
+* Un mot de passe trop simple est facile à deviner grace aux algorithmes simples (attaque en force brute)
+* Un utilisateur a tendance à oublier son mot de passe complexe. Il réutilise donc le même mot de passe partout
+* Nous sommes obligés de stocker le mot de passe dans notre base de données.
+  * Si on est hacké, on divulge le mot de passe de nos utilisateurs au hackeur.
+  * A ce moment là, le hackeur aurait potentiellement accès à tous les comptes utilisant le mot de passe partagé
 
 La solution des biométriques est compliqué aussi :
 
-- On a besoin d'un périphérique spécial (lecteur d'emprunt digital)
-- Sinon, certains méthodes ne sont pas totalement fiables (détection faciale) et pourraient engendre des faux positifs ou des faux négatifs
+* On a besoin d'un périphérique spécial (lecteur d'emprunt digital)
+* Sinon, certains méthodes ne sont pas totalement fiables (détection faciale) et pourraient engendre des faux positifs ou des faux négatifs
 
 ### Identité par délégation
 
@@ -50,26 +50,24 @@ Une autre stratégie pour prouver l'identité est de dépendre sur un tiers.
 
 Par exemple, si on utilise l'adresse e-mail de la personne, on peut supposer que seulement cette personne aura accès à sa boîte mail.
 
-Pour prouver son identité, on pourrait juste forcer cette utilisateur à prouver qu'il a accès aussi à sa boîte e-mail - en l'envoyant un message à cette adresse. 
+Pour prouver son identité, on pourrait juste forcer cette utilisateur à prouver qu'il a accès aussi à sa boîte e-mail - en l'envoyant un message à cette adresse.
 
 Normalement on envoie un émail avec un code ou lien unique. Si l'utilisateur peut nous répéter ce code unique, il prouve qu'il a pu consulter son mail.
 
 Pour nous, cela veut dire qu'on ne stocke plus son mot de passe dans notre base de données ! On dépend du mot de passe utilisé pour protéger son compte email :
 
-- C'est 1 mot de passe en mois à mémoriser pour l'utilisateur
-- En revanche, si le mote de passe de sa boîte email est volé, le voleur aura accès à notre service aussi
+* C'est 1 mot de passe en mois à mémoriser pour l'utilisateur
+* En revanche, si le mote de passe de sa boîte email est volé, le voleur aura accès à notre service aussi
 
 {% hint style="info" %}
-
 Ce flux pourrait être adapté autrement : par envoie d'un SMS par exemple.
-
 {% endhint %}
 
 Un autre type d'identité par délégation existe aujourd'hui grâce au norme [OAuth2](https://oauth.net/2/). L'idée de base est qu'un service centralisé s'occupe de l'identification d'un utilisateur, et crée des jetons d'accès utilisables par notre API. On en a tous utilisé :
 
-- connexion avec votre identifiant Google
-- connexion avec votre identifiant Facebook
-- connexion avec votre identifiant GitHub
+* connexion avec votre identifiant Google
+* connexion avec votre identifiant Facebook
+* connexion avec votre identifiant GitHub
 
 En revanche, cela force nos utilisateurs d'avoir un compte chez un tiers avant d'utiliser notre service (parfois pas idéal). Et aussi, s'il y a une fuite chez un de ces services, notre API sera à risque aussi.
 
@@ -77,11 +75,11 @@ En revanche, cela force nos utilisateurs d'avoir un compte chez un tiers avant d
 
 Pour encore sécuriser nos services aujourd'hui, la tendance est d'aller vers une combinaison des différents approches :
 
-- Je fournie mon adresse e-mail et mot de passe
-- Si le mot de passe est validé, l'API envoie un message avec un code unique à l'adresse email
-- l'utilisateur doit répéter le code unique trouvé dans le boîte mail
-- le jeton est crée
-- ... etc
+* Je fournie mon adresse e-mail et mot de passe
+* Si le mot de passe est validé, l'API envoie un message avec un code unique à l'adresse email
+* l'utilisateur doit répéter le code unique trouvé dans le boîte mail
+* le jeton est crée
+* ... etc
 
 Même si le premier mot de passe est divulgué, on a une autre couche de protection via le mot de passe de la boîte mail.
 
@@ -119,7 +117,6 @@ export const AuthMiddleware = async (request: Request, response: Response, next:
 
 Nous utilisons ce middleware en le plaçant à la tête des branches à protéger dans notre API :
 
-
 ```ts
 app.use('/user', 
   AuthMiddleware,   // Insérer un middleware pour valider que l'utilisateur est bien identifié
@@ -131,12 +128,13 @@ app.use('/user',
 
 Dans beaucoup d'APIs il n'est pas suffisant de savoir que la personne est bien identifié. Cet utilisateur aura peut-être des droits différents selon son **rôle**. Par exemple, un utilisateur normal vs un administrateur.
 
-Une stratégie serait d'encoder dans le jeton le rôle de l'utilisateur, ou bien une indice des ressources à sa disposition. 
+Une stratégie serait d'encoder dans le jeton le rôle de l'utilisateur, ou bien une indice des ressources à sa disposition.
 
 On parle souvent de son **scope**, c'est l'ensemble de ressources à la disposition de l'utilisateur, qu'on aura extrait de la base de données lors de la création de son jeton d'accès. Un scope pourrait être simplement un string :
-- `admin` : un scope global qui donne accès à tout
-- `user` : l'utilisateur aura accès à son profil utilisateur
-- `bidule` : à nous de définir ce que cela veut dire
+
+* `admin` : un scope global qui donne accès à tout
+* `user` : l'utilisateur aura accès à son profil utilisateur
+* `bidule` : à nous de définir ce que cela veut dire
 
 On peut adapter notre **middleware** afin de prendre en compte des **scopes** :
 
@@ -196,9 +194,9 @@ app.use('/user',
 
 Le jeton d'identité correspond à quoi exactement ?
 
-- Un numéro unique (un UUID par exemple)
-  - On crée et stocke un identifiant liée à la session de l'utilisateur. A chaque requête l'API est obligé de chercher dans sa base local l'identité de l'utilisateur et les droits associés. Ceci n'est pas très compatible avec une API totalement **stateless**, parce qu'on est obligé de stocker le UUID à quelque part entre les requêtes
-- Un jeton qui stocke toutes les informations d'identité et d'accès : le JWT
+* Un numéro unique (un UUID par exemple)
+  * On crée et stocke un identifiant liée à la session de l'utilisateur. A chaque requête l'API est obligé de chercher dans sa base local l'identité de l'utilisateur et les droits associés. Ceci n'est pas très compatible avec une API totalement **stateless**, parce qu'on est obligé de stocker le UUID à quelque part entre les requêtes
+* Un jeton qui stocke toutes les informations d'identité et d'accès : le JWT
 
 Un JWT (**JSON Web Token**), et un format qui permet de transmettre non-seulement des informations d'identité, mais aussi les **scopes** en un seul paquet. En plus, le JWT est **signée**, c'est à dire, on a le moyen de valider l'identité de la personne qui l'a crée initialement (nous même !).
 
@@ -276,16 +274,17 @@ export class JWT {
 
 Dans vos challenges vous avez pu vous connecter juste en renseignant votre adresse email (sans mot de passe). Un mail avec un code est envoyé à votre boîte mail. Quand on clique dessus on est considéré autorisé.
 
-Typiquement le mail contient un URL cliquable qui contient le JWT codé en hexadecimal comme paramètre query. En cliquant sur ce lien, un navigateur s'ouvre sur un endpoint de notre API. L'api récupère le paramètre **query** (le JWT), le décode, et si toutes les informations sont correctes, on peut supposer que l'identité de l'utilisateur est prouvé. 
+Typiquement le mail contient un URL cliquable qui contient le JWT codé en hexadecimal comme paramètre query. En cliquant sur ce lien, un navigateur s'ouvre sur un endpoint de notre API. L'api récupère le paramètre **query** (le JWT), le décode, et si toutes les informations sont correctes, on peut supposer que l'identité de l'utilisateur est prouvé.
 
 On peut ensuite générer un autre jeton type `access token` qui :
-- contient le ID de l'utilisateur
-- contient les **scopes** de l'utilisateur
 
+* contient le ID de l'utilisateur
+* contient les **scopes** de l'utilisateur
 
 Mettez en place ce flux avec les contraintes suivantes :
+
 * Le lien dans le mail doit avoir un timeout de 5 minutes, au delà de cette intervalle, il faut retourner une erreur comme quoi il faut redemander un nouveau mail.
-* On ne doit pas pouvoir acceder aux autres endpoints dans notre API avec le jeton dans le mail. En effet il faut que le jeton de connexion magique soit uniquement pour générer le jeton d'accès final
+* On ne doit pas pouvoir acceder aux autres endpoints dans notre API avec le jeton dans le mail. En effet il faut que le jeton de connexion magique soit uniquement pour valider l'identité de l'utilisateur. Ensuite, un autre jeton est crée pour l'accès aux endpoints de l'API. Ce dernier pourrait contenir d'autres infos dans son payload, ou bien être chiffrée en utilisant une paire de clés différente.
 
 <details>
 
@@ -294,9 +293,10 @@ Mettez en place ce flux avec les contraintes suivantes :
 La solution complète se trouve [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/002-magic-link-authorisation).
 
 Notez bien :
-- Les endpoints pour créer, envoyer (par email) un lien magique, ainsi que la conversion de ce lien en `access token` : `src/routes/Auth.ts`
-- Le middleware utilisé pour valider un `access token` avant une route : `src/middleware/auth.middleware.ts`
-- L'insertion de ce middleware devant certaines routes de l'API : `src/server.ts`
-- Le fichier Postman pour tester la solution : `src/test`
+
+* Les endpoints pour créer, envoyer (par email) un lien magique, ainsi que la conversion de ce lien en `access token` : `src/routes/Auth.ts`
+* Le middleware utilisé pour valider un `access token` avant une route : `src/middleware/auth.middleware.ts`
+* L'insertion de ce middleware devant certaines routes de l'API : `src/server.ts`
+* Le fichier Postman pour tester la solution : `src/test`
 
 </details>
