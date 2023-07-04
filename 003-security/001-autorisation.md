@@ -283,6 +283,7 @@ On peut ensuite générer un autre jeton type `access token` qui :
 
 Mettez en place ce flux avec les contraintes suivantes :
 
+* Utilisez [Mailjet](https://www.google.com/url?sa=t\&rct=j\&q=\&esrc=s\&source=web\&cd=\&cad=rja\&uact=8\&ved=2ahUKEwiQo7i4zfT\_AhV6WqQEHdX5Ab8QFnoECBYQAQ\&url=https%3A%2F%2Fwww.mailjet.com%2F\&usg=AOvVaw2Ex38Yo02hwFbDOEH-W6DD\&opi=89978449) pour l'envoie de votre mail. Mailjet dispose d'un palier gratuit, et il y a même une [librairie nodejs](https://www.npmjs.com/package/node-mailjet) qui facilite l'interaction avec leurs APIs
 * Le lien dans le mail doit avoir un timeout de 5 minutes, au delà de cette intervalle, il faut retourner une erreur comme quoi il faut redemander un nouveau mail.
 * On ne doit pas pouvoir acceder aux autres endpoints dans notre API avec le jeton dans le mail. En effet il faut que le jeton de connexion magique soit uniquement pour valider l'identité de l'utilisateur. Ensuite, un autre jeton est crée pour l'accès aux endpoints de l'API. Ce dernier pourrait contenir d'autres infos dans son payload, ou bien être chiffrée en utilisant une paire de clés différente.
 
