@@ -107,6 +107,8 @@ export const AuthMiddleware = async (request: Request, response: Response, next:
     if (!valid) {
       throw new Error(401);
     }
+    
+    next();
 
   } catch (err) {
     next(err)
