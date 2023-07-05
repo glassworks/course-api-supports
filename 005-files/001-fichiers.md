@@ -1,5 +1,4 @@
-# Gestion des fichiers
-
+# Fichiers
 
 Dans un déploiement cloud on ne pourrait pas stocker des fichiers des utilisateurs localement (comme dans WordPress ou autre type de serveur) :
 
@@ -12,11 +11,9 @@ Le principe est qu'on stock un "objet" (un fichier) sous un chemin textuel, mais
 
 > Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/006-files)
 
-
 ## Buckets chez Scaleway
 
 Chez Scaleway, il y a ce service :
-
 
 <figure><img src="../.gitbook/assets/scaleway.png" alt=""><figcaption></figcaption></figure>
 
@@ -26,10 +23,9 @@ On commence par créer un `bucket`, un seau dans lequel on va stocker nos fichie
 
 <figure><img src="../.gitbook/assets/bucket.png" alt=""><figcaption></figcaption></figure>
 
-
 ## Identification
 
-Il est possible d'avoir des buckets ouvert au publique, ou privé: 
+Il est possible d'avoir des buckets ouvert au publique, ou privé:
 
 * Ouvert au publique : pour les blogs etc où on va juste références les images, fichiers etc dans notre html avec `<img src="...">`. Il n'y a pas de sécurité.
 * Privé : on va exiger de la sécurité avant de récupérer les fichiers.
@@ -42,7 +38,7 @@ Attention : le code secret s'affiche qu'une seule fois donc prenez note ! A tout
 
 Chez nous on va probablement devoir garder une trace de fichiers stockées dans le cloud. De la même manière qu'on stocke, par exemple, le chemin absolut (ou relative) d'un fichier sur le stockage local, on va stocker le chemin pour retrouver le fichier sur le cloud.
 
-Heureusement avec Object Storage chaque fichier est identifié par un chemin qui est très similaire à une chemin pour un fichier: 
+Heureusement avec Object Storage chaque fichier est identifié par un chemin qui est très similaire à une chemin pour un fichier:
 
 ```
 https://object-storage-playground.s3.fr-par.scw.cloud/user/15/0e822c95-4d7e-4dd9-ac9f-5e19c6860b25/Crumpets.JPG
@@ -50,6 +46,7 @@ https://object-storage-playground.s3.fr-par.scw.cloud/user/15/0e822c95-4d7e-4dd9
 # Chemin vers le bucket : https://object-storage-playground.s3.fr-par.scw.cloud
 # Chemin local du fichier : user/15/0e822c95-4d7e-4dd9-ac9f-5e19c6860b25/Crumpets.JPG
 ```
+
 Nous allons donc stocker cette identifiant dans notre base de données.
 
 Par exemple, j'aimerais permettre à un utilisateur de mon API de télécharger des fichiers liées à son compte. Je vais ajouter une table suivante à mon DDL :
@@ -102,7 +99,7 @@ export type DbTable =
 ;
 ```
 
-Et dans `src/model/User/IUserFile.ts` : 
+Et dans `src/model/User/IUserFile.ts` :
 
 ```ts
 export interface IUserFile {
@@ -123,10 +120,10 @@ export type IUserFileRO = Readonly<IUserFile>;
 Amazon maintien un package NodeJS pour le protocole S3 :
 
 ```sh
-npm install @aws-sdk
+npm install @aws-sdk/client-s3
 ```
 
-Dans notre projet, on crée un outil (**wrapper**) qui permet d'envoyer et récupérer des fichiers de notre bucket S3: 
+Dans notre projet, on crée un outil (**wrapper**) qui permet d'envoyer et récupérer des fichiers de notre bucket S3:
 
 ```ts
 import { GetObjectCommandInput, PutObjectCommandInput, S3 } from "@aws-sdk/client-s3";
@@ -195,19 +192,17 @@ export class ObjectStorage {
 
 Cette classe simplifie la donné :
 
-- On la donne un tampon mémoire avec les données d'un fichier, avec l'ID et son type, et on laisse la classe s'occuper de l'envoie vers le Bucket
-- On la donne une ID de stockage, et on laisse la classe récupérer l'objet, en retournant un **stream** qui sera remplit de données du fichier.
+* On la donne un tampon mémoire avec les données d'un fichier, avec l'ID et son type, et on laisse la classe s'occuper de l'envoie vers le Bucket
+* On la donne une ID de stockage, et on laisse la classe récupérer l'objet, en retournant un **stream** qui sera remplit de données du fichier.
 
 Notez ici, que les coordonnées de connexion au Bucket sont inclus dans la classe diréctement, mais modifiables par des variables d'environnement. Idéalement on utilisera un autre Bucket pour la production !!
 
-
-## Préciser des endpoints 
+## Préciser des endpoints
 
 On va se servir de cet outil pour uploader et downloader des fichiers pour notre utilisateur, en créant 2 endpoints :
 
-- `POST /user/:userId/file` : pour uploader un fichier
-- `GET /user/:userId/file/:fileId` : pour downloader un fichier
-
+* `POST /user/:userId/file` : pour uploader un fichier
+* `GET /user/:userId/file/:fileId` : pour downloader un fichier
 
 Je crée le controller dans `src/routes/UserFileController.ts`
 
@@ -339,37 +334,33 @@ npm install @types/uuid --save-dev
 ```
 
 {% hint style="info" %}
-
 Pour faciliter l'exemple, on n'a pas sécurisé les routes. Dans une vrai production, normalement, ces routes doivent d'abord être sécurisées via notre jeton JWT.
-
 {% endhint %}
 
 ### Upload
 
 Pour le upload, au lieu de recevoir un JSON, le corps du message HTTP est en **multi-part**, qui veut dire qu'il contient plusieurs segments, normalement identifiées par un mime-type.
 
-Dans la route de upload, la librairie `multer` nous extrait le segment qui s'appelle `file` te nous expose un tampon de mémoire contenant les données du fichier. On n'a juste à transférer les données de ce tampon mémoire vers notre Bucket, grâce à notre outil `ObjectStorage`. 
+Dans la route de upload, la librairie `multer` nous extrait le segment qui s'appelle `file` te nous expose un tampon de mémoire contenant les données du fichier. On n'a juste à transférer les données de ce tampon mémoire vers notre Bucket, grâce à notre outil `ObjectStorage`.
 
 Ensuite, on note l'existance de ce fichier dans notre base de données.
 
 ### Download
 
-
 Pour le download, on commence par récupérer la clé pour notre fichier dans la base de données.
 
 Ensuite, au lieu de charger tout le fichier directement dans la mémoire de notre API, puis le repasser au client, on va juste créer un **stream** de transfert. Dès qu'on reçoit un peu de données du cloud, on les transfert à demandeur. Nous conservons ainsi des ressources de notre API.
 
-D'abord, on répond toute suite avec un code HTTP `200`, et l'en-tête  `'Transfer-Encoding': 'chunked'`. Le demandeur sait maintenant qu'il va recevoir les résultats via plusieurs réponses, et pas une seule.
+D'abord, on répond toute suite avec un code HTTP `200`, et l'en-tête `'Transfer-Encoding': 'chunked'`. Le demandeur sait maintenant qu'il va recevoir les résultats via plusieurs réponses, et pas une seule.
 
 Ensuite, on utilise le **stream** pour recevoir et transférer progressivement les données :
 
-- dès qu'on recoit quelques donnes, on peut réagir (`stream.on('data', (chunk) => { ... })`). Dans notre cas, on réécrit ces données dans un message vers le demandeur
-- quand il n'y a plus de données à recevoir, l'événement `end` est invoqué, et nous on peut signaler au demandeur qu'il n'y a plus de données
+* dès qu'on recoit quelques donnes, on peut réagir (`stream.on('data', (chunk) => { ... })`). Dans notre cas, on réécrit ces données dans un message vers le demandeur
+* quand il n'y a plus de données à recevoir, l'événement `end` est invoqué, et nous on peut signaler au demandeur qu'il n'y a plus de données
 
-## Documentation 
+## Documentation
 
-Ici, on utilise des endpoints légèrement différents en format et réponse. Avec `tsoa` on peut personnaliser la documentation généré directement dans `tsoa.json` : 
-
+Ici, on utilise des endpoints légèrement différents en format et réponse. Avec `tsoa` on peut personnaliser la documentation généré directement dans `tsoa.json` :
 
 ```json
 {
