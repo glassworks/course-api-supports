@@ -218,6 +218,11 @@ Le flux d'un JWT est le suivant :
 
 Pour un JWT sécurisé, il faut donc une paire de clés qui permet de chiffrer et déchiffrer le JWT. Il y a une librairie NodeJS qui nous aide à gérer les JWT qui s'appelle `jsonwebtoken`.
 
+```bash
+npm install jsonwebtoken
+npm install @types/jsonwebtoken
+```
+
 Le code suivant est un exemple d'une classe utilitaire qui permet de créer et décoder un JWT :
 
 ```ts
