@@ -4,9 +4,9 @@
 
 Nous avons déjà testé une mise en prod de notre API [ici](../003-security/050-https.md).
 
-Pour une déploiement sécurisé, il serait prudent de changer des variables d'environnement :
+Pour un déploiement sécurisé, il serait prudent de changer des variables d'environnement :
 
-- Pour l'access au SGBDR
+- Pour l'accès au SGBDR
 - Accès à des buckets de stockage pour la production
 - Compte de mailing production
 - ...
@@ -103,7 +103,7 @@ Notez le suivant :
 
 - les entrées `environment` sur les services `api` et `dbms`
 - l'entrée `labels` sur le service `api`
-  - Un `label` est une étiquette qu'on attache au container Docker afin d'être plus facilement identifiable par la suite. Nous allons l'utiliser plus tard pour extraire uniquement le journaux provenants de ce container.
+  - Un `label` est une étiquette qu'on attache au container Docker afin d'être plus facilement identifiable par la suite. Nous allons l'utiliser plus tard pour extraire uniquement les journaux provenant de ce container.
 
 
 Lancez le stack sur votre instance, et n'oubliez pas de se connecter à votre SGBDR une première fois.

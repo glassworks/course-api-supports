@@ -7,7 +7,7 @@ Dans un déploiement cloud on ne pourrait pas stocker des fichiers des utilisate
 
 Amazon a eu énormément de succès avec leur protocole S3 pour le stockage "d'objets" dans le cloud. Aujourd'hui la plupart des fournisseurs cloud offre un service de stockage qui s'appelle "Object Storage", qui respecte la norme Amazon S3.
 
-Le principe est qu'on stock un "objet" (un fichier) sous un chemin textuel, mais on n'a aucun détail concernant l'emplacement disque etc. Il y a un protocole HTTP qui permet d'envoyer des objets, récupérer des objets, les supprimer ou les interroger (pour de la meta-data).
+Le principe est qu'on stocke un "objet" (un fichier) sous un chemin textuel, mais on n'a aucun détail concernant l'emplacement disque etc. Il y a un protocole HTTP qui permet d'envoyer des objets, récupérer des objets, les supprimer ou les interroger (pour de la meta-data).
 
 > Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/006-files)
 
@@ -19,26 +19,26 @@ Chez Scaleway, il y a ce service :
 
 Mais on trouve aussi les Object Storage chez Google, AWS (bien sur), OVH, etc.
 
-On commence par créer un `bucket`, un seau dans lequel on va stocker nos fichiers. Un fois crée, il y a des information qu'on va utiliser dans notre API pour communiquer avec le bucket :
+On commence par créer un `bucket`, un seau dans lequel on va stocker nos fichiers. Une fois crée, il y a des informations qu'on va utiliser dans notre API pour communiquer avec le bucket :
 
 <figure><img src="../.gitbook/assets/bucket.png" alt=""><figcaption></figcaption></figure>
 
 ## Identification
 
-Il est possible d'avoir des buckets ouvert au publique, ou privé:
+Il est possible d'avoir des buckets ouvert au public, ou privé :
 
-* Ouvert au publique : pour les blogs etc où on va juste références les images, fichiers etc dans notre html avec `<img src="...">`. Il n'y a pas de sécurité.
+* Ouvert au public : pour les blogs etc où on va juste références les images, fichiers etc dans notre html avec `<img src="...">`. Il n'y a pas de sécurité.
 * Privé : on va exiger de la sécurité avant de récupérer les fichiers.
 
-Pour un usage privé, il faut disposer des clés d'accès. Créer des clés d'accès change selon le fournisseur cloud, mais chez Scaleway on va dans Organisation (en haut à droite), Identifiants, Clés API. Ensuite on clique sur "Générer une nouvelle clé API".
+Pour un usage privé, il faut disposer des clés d'accès. Créer des clés d'accès change selon le fournisseur cloud, mais chez Scaleway on va dans Organisation (en haut à droite), Identifiants, Clés API. Ensuite, on clique sur "Générer une nouvelle clé API".
 
-Attention : le code secret s'affiche qu'une seule fois donc prenez note ! A tout moment si on constate de l'abus sur la clé, on peut la supprimer et remplacer avec une nouvelle.
+Attention : le code secret s'affiche qu'une seule fois donc, prenez note ! À tout moment, si on constate de l'abus sur la clé, on peut la supprimer et remplacer avec une nouvelle.
 
 ## Relier notre base et le stockage
 
-Chez nous on va probablement devoir garder une trace de fichiers stockées dans le cloud. De la même manière qu'on stocke, par exemple, le chemin absolut (ou relative) d'un fichier sur le stockage local, on va stocker le chemin pour retrouver le fichier sur le cloud.
+Chez nous, on va probablement devoir garder une trace de fichiers stockés dans le cloud. De la même manière que l'on stocke, par exemple, le chemin absolut (ou relative) d'un fichier sur le stockage local, on va stocker le chemin pour retrouver le fichier sur le cloud.
 
-Heureusement avec Object Storage chaque fichier est identifié par un chemin qui est très similaire à une chemin pour un fichier:
+Heureusement avec Object Storage chaque fichier est identifié par un chemin qui est très similaire à un chemin pour un fichier :
 
 ```
 https://object-storage-playground.s3.fr-par.scw.cloud/user/15/0e822c95-4d7e-4dd9-ac9f-5e19c6860b25/Crumpets.JPG
@@ -47,7 +47,7 @@ https://object-storage-playground.s3.fr-par.scw.cloud/user/15/0e822c95-4d7e-4dd9
 # Chemin local du fichier : user/15/0e822c95-4d7e-4dd9-ac9f-5e19c6860b25/Crumpets.JPG
 ```
 
-Nous allons donc stocker cette identifiant dans notre base de données.
+Nous allons donc stocker cet identifiant dans notre base de données.
 
 Par exemple, j'aimerais permettre à un utilisateur de mon API de télécharger des fichiers liées à son compte. Je vais ajouter une table suivante à mon DDL :
 
@@ -84,7 +84,7 @@ create table if not exists user_file (
 
 J'appelle l'ID du fichier dans le cloud `storageKey`
 
-Pour mettre à jour ma base de données je fais :
+Pour mettre à jour ma base de données, je fais :
 
 ```
 mycli -h dbms -u root test < ./dbms/ddl/ddl.sql 
@@ -117,7 +117,7 @@ export type IUserFileRO = Readonly<IUserFile>;
 
 ## Outil pour parler avec l'Object Storage
 
-Amazon maintien un package NodeJS pour le protocole S3 :
+Amazon maintient un package NodeJS pour le protocole S3 :
 
 ```sh
 npm install @aws-sdk/client-s3
@@ -190,12 +190,12 @@ export class ObjectStorage {
 }
 ```
 
-Cette classe simplifie la donné :
+Cette classe simplifie la donne :
 
-* On la donne un tampon mémoire avec les données d'un fichier, avec l'ID et son type, et on laisse la classe s'occuper de l'envoie vers le Bucket
-* On la donne une ID de stockage, et on laisse la classe récupérer l'objet, en retournant un **stream** qui sera remplit de données du fichier.
+* On la donne un tampon mémoire avec les données d'un fichier, avec l'ID et son type, et on laisse la classe s'occuper de l'envoi vers le Bucket
+* On la donne une ID de stockage, et on laisse la classe récupérer l'objet, en retournant un **stream** qui sera rempli de données du fichier.
 
-Notez ici, que les coordonnées de connexion au Bucket sont inclus dans la classe diréctement, mais modifiables par des variables d'environnement. Idéalement on utilisera un autre Bucket pour la production !!
+Notez ici, que les coordonnées de connexion au Bucket sont inclus dans la classe directement, mais modifiables par des variables d'environnement. Idéalement on utilisera un autre Bucket pour la production !!
 
 ## Préciser des endpoints
 
@@ -334,7 +334,7 @@ npm install @types/uuid --save-dev
 ```
 
 {% hint style="info" %}
-Pour faciliter l'exemple, on n'a pas sécurisé les routes. Dans une vrai production, normalement, ces routes doivent d'abord être sécurisées via notre jeton JWT.
+Pour faciliter l'exemple, on n'a pas sécurisé les routes. Dans une vraie production, normalement, ces routes doivent d'abord être sécurisées via notre jeton JWT.
 {% endhint %}
 
 ### Upload
@@ -343,24 +343,24 @@ Pour le upload, au lieu de recevoir un JSON, le corps du message HTTP est en **m
 
 Dans la route de upload, la librairie `multer` nous extrait le segment qui s'appelle `file` te nous expose un tampon de mémoire contenant les données du fichier. On n'a juste à transférer les données de ce tampon mémoire vers notre Bucket, grâce à notre outil `ObjectStorage`.
 
-Ensuite, on note l'existance de ce fichier dans notre base de données.
+Ensuite, on note l'existence de ce fichier dans notre base de données.
 
 ### Download
 
 Pour le download, on commence par récupérer la clé pour notre fichier dans la base de données.
 
-Ensuite, au lieu de charger tout le fichier directement dans la mémoire de notre API, puis le repasser au client, on va juste créer un **stream** de transfert. Dès qu'on reçoit un peu de données du cloud, on les transfert à demandeur. Nous conservons ainsi des ressources de notre API.
+Ensuite, au lieu de charger tout le fichier directement dans la mémoire de notre API, puis le repasser au client, on va juste créer un **stream** de transfert. Dès qu'on reçoit un peu de données du cloud, on les transféra au demandeur. Nous conservons ainsi des ressources de notre API.
 
 D'abord, on répond toute suite avec un code HTTP `200`, et l'en-tête `'Transfer-Encoding': 'chunked'`. Le demandeur sait maintenant qu'il va recevoir les résultats via plusieurs réponses, et pas une seule.
 
 Ensuite, on utilise le **stream** pour recevoir et transférer progressivement les données :
 
-* dès qu'on recoit quelques donnes, on peut réagir (`stream.on('data', (chunk) => { ... })`). Dans notre cas, on réécrit ces données dans un message vers le demandeur
-* quand il n'y a plus de données à recevoir, l'événement `end` est invoqué, et nous on peut signaler au demandeur qu'il n'y a plus de données
+* dès qu'on reçoit quelques donnes, on peut réagir (`stream.on('data', (chunk) => { ... })`). Dans notre cas, on réécrit ces données dans un message vers le demandeur
+* quand il n'y a plus de données à recevoir, l'événement `end` est invoqué, et on peut signaler au demandeur qu'il n'y a plus de données
 
 ## Documentation
 
-Ici, on utilise des endpoints légèrement différents en format et réponse. Avec `tsoa` on peut personnaliser la documentation généré directement dans `tsoa.json` :
+Ici, on utilise des endpoints légèrement différents en format et réponse. Avec `tsoa` on peut personnaliser la documentation générée directement dans `tsoa.json` :
 
 ```json
 {

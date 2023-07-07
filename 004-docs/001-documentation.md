@@ -5,27 +5,27 @@ Notre API doit être facilement compréhensible pour ses utilisateurs. On pourra
 * il est difficile de le garder à jour, on est souvent faignant, ou en retard
 * Une petite modification au code pourrait modifier le comportement documenté
 
-Un standard de documentation qui s'appelle `swagger` et depuis peu [`openapi`](https://www.openapis.org) a crée une norme pour la documentation d'un API. La documentation est en form `.json` et peu être lu est interprété par un autre process. Il y a même des [process qui transforment automatiquement un fichier `swagger` en interface HTML pour notre lecture](https://swagger.io/tools/swagger-ui/). 
+Un standard de documentation qui s'appelle `swagger` et depuis peu [`openapi`](https://www.openapis.org) a créé une norme pour la documentation d'un API. La documentation est en form `.json` et peu être lue est interprété par un autre process. Il y a même des [process qui transforment automatiquement un fichier `swagger` en interface HTML pour notre lecture](https://swagger.io/tools/swagger-ui/). 
 
 Il y a plusieurs façons de documenter un API :
 
 * Définition vers le code : on rédige notre `swagger.yml` ou `swagger.json` manuellement, et puis on fait tourner un processus qui va créer des fonctions/classes/endpoints pour notre architecture cible (nodejs, php, ruby... etc). Le fichier `swagger.*` est la source de vérité de l'application.
-    * Personnellement, je n'aime pas cet approche, car le code généré est très répétitif, et parfois pas assez flexible pour ce que je veux faire
-    * Parfois on oublie que le fichier swagger est la source de vérité. On ajoute des fonctions, qui seront décroché ou bien supprimer plus tard quand on relance le générateur.
+    * Personnellement, je n'aime pas cette approche, car le code généré est très répétitif, et parfois pas assez flexible pour ce que je veux faire
+    * Parfois on oublie que le fichier swagger est la source de vérité. On ajoute des fonctions, qui seront décrochées ou bien supprimées plus tard quand on relance le générateur.
 * Code ver la définition : on fait une sorte de bien structurer et documenter notre code (avec des commentaires), et un `swagger.*` fichier est crée de notre code. Notre code devient la source de vérité.
-* Manuel : on maintien la doc et l'implémentation indépendamment. Très lourd, et facile à oublier ou de ne pas mettre à jour.
+* Manuel : on maintient la doc et l'implémentation indépendamment. Très lourd, et facile à oublier ou de ne pas mettre à jour.
 
-Personnellement je préfère qu'on aie une seule source de vérité : notre code source !
+Personnellement je préfère qu'on ait une seule source de vérité : notre code source !
 
 Grâce à Typescript, il y a des projets comme [`tsoa`](https://tsoa-community.github.io/docs/) qui permet d'utiliser la structure Typescript et les commentaires déjà présents dans le code afin d'assembler automatiquement la documentation.
 
-Par contre, `tsoa` est un framework qui est _opinionated_. On est obligé de structurer notre code à leur normes pour que la documentation soit cohérent :
+Par contre, `tsoa` est un framework qui est _opinionated_. On est obligé de structurer notre code à leurs normes pour que la documentation soit cohérente :
 
 * __Orienté objet__ : on précise un objet par endpoint avec des fonctions dedans pour les opérations type CRUD - cet objet est un `Controller` dans le pattern MVC.
 * __Décorateurs__ : on utilise les décorateurs de typescript pour apporter de l'information concernant les routes, paramètres etc
-* __Routing est opaque__ : au lieu de créer des routes nous même (comme dans le dernier exemple), on laisse `tsoa` construire notre API dans express selon les décorateurs. C'est le seul point que je n'aime pas, mais l'avantage d'avoir un documentation cohérent équilibre ce désavantage.
+* __Routing est opaque__ : au lieu de créer des routes nous même (comme dans le dernier exemple), on laisse `tsoa` construire notre API dans express selon les décorateurs. C'est le seul point que je n'aime pas, mais l'avantage d'avoir une documentation cohérente fait équilibrer ce désavantage.
 
-Mince ! On est allé un peu trop loin de la remaniage de notre code - il faudrait repasser un modèle orienté objet.
+Mince ! On est allé un peu trop loin de la *remaniage* de notre code - il faudrait repasser un modèle orienté objet.
 
 
 > Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/005-docs)
@@ -177,7 +177,7 @@ npm run swagger
 # - routes/routes.ts
 ```
 
-Consultez les nouveaux fichier crées. On verra de la trace de routes définies dans notre `UserController.ts`
+Consultez les nouveaux fichiers créés. On verra de la trace de routes définies dans notre `UserController.ts`
 
 Ensuite, il faut inclure ce code dans notre `server.ts` :
 
@@ -220,7 +220,7 @@ npm install swagger-ui-express
 npm install --save-dev @types/swagger-ui-express`
 ```
 
-Dans notre fichier `server.ts`, on ajoute de lignes pour servir ce contenu :
+Dans notre fichier `server.ts`, on ajoute des lignes pour servir ce contenu :
 
 ```ts
   // Servir le contenu static du dossier `public`
@@ -251,7 +251,7 @@ Notez surtout que les commentaires dans notre code apparaissent maintenant comme
 
 ## Authentication avec `tsoa`
 
-Au lieu de créer un middleware *ad-hoc* comme on a fait avant, `tsoq` préconise un emplacement fixe pour la logique de note notre sécurisation. Cette emplacement est défini dans `./tsoa.json`, notamment la ligne `authenticationModule`
+Au lieu de créer un middleware *ad-hoc* comme on a fait avant, `tsoa` préconise un emplacement fixe pour la logique de note notre sécurisation. Cet emplacement est défini dans `./tsoa.json`, notamment la ligne `authenticationModule`
 
 ```json
 {
@@ -277,7 +277,7 @@ Au lieu de créer un middleware *ad-hoc* comme on a fait avant, `tsoq` préconis
 }
 ```
 
-Il faut donc convertir notre ancien middleware d'authorization vers ce nouveau fichier :
+Il faut donc convertir notre ancien middleware d'autorisation vers ce nouveau fichier :
 
 ```ts
 import { Request } from 'express';
@@ -334,9 +334,9 @@ export async function expressAuthentication(
 }
 ```
 
-Vous remarquerez que `tsoa` permet de définir différentes stratégies d'authorisation, et contient aussi la logique pour les *scopes* (qu'on n'utilise pas dans notre exemple).
+Vous remarquerez que `tsoa` permet de définir différentes stratégies d'autorisation, et contient aussi la logique pour les *scopes* (qu'on n'utilise pas dans notre exemple).
 
-Ensuite, pour protéger nos routes, il suffit de simplement ajouter le décorateur `@Security` devant une class ou méthode :
+Ensuite, pour protéger nos routes, il suffit d'ajouter le décorateur `@Security` devant une classe ou méthode :
 
 ```ts
 @Route("/protected/user")
@@ -350,8 +350,7 @@ export class ProtectedUserController {
   public async getUsers(
 ```
 
-Après une recompilation (`npm run swagger`), ce la route est désormais sécurisé par notre authentification pas JWT.
-
+Après une recompilation (`npm run swagger`), la route est désormais sécurisée par notre authentification pas JWT.
 
 ## Automatiser la recompilation du swagger
 
@@ -366,10 +365,9 @@ Vous avez sûrement remarqué qu'à chaque modification, on est obligé de recom
 }
 ```
 
-Ici, on lance systématiquement la recompilation des routes avant de lancer le server, toute en ignorant le fichier `routes.ts` qui est le fichier généré par `tsoa`.
+Ici, on lance systématiquement la recompilation des routes avant de lancer le serveur, tout en ignorant le fichier `routes.ts` qui est le fichier généré par `tsoa`.
 
 On peut simplifier alors notre `package.json`, car `nodemon.json` est automatiquement lu par `nodemon` lors de son exécution :
-
 
 ```json
   ...
@@ -383,7 +381,7 @@ On peut simplifier alors notre `package.json`, car `nodemon.json` est automatiqu
 
 Il y a quelques fichiers de plus à ajouter à notre configuration de déploiement, notamment le dossier `public` qui contient le `swagger.json`.
 
-En brèf, il faut copier le dossier `public` dans le dossier `build` après la compilation. Pour cela on utilise la librairies `copyfiles` :
+En bref, il faut copier le dossier `public` dans le dossier `build` après la compilation. Pour cela, on utilise la librairie `copyfiles` :
 
 ```
 # outil pour copier les fichiers et dossiers

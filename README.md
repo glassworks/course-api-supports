@@ -18,6 +18,7 @@ Aidez à l'amélioration des supports ! Si vous constatez une coquille, n'hésit
 
 Copyright © Kevin Glass 2023.
 
-Le redaction de ce programme a été faite par Kevin Glass, y compris la création des exemples, exercices, et données de test.
+La rédaction de ce programme a été faite par Kevin Glass, y compris la création des exemples, exercices, et données de test.
 
 Toute ré-utilisation du contenu de ce cours est sujet à l'accord exprès et à l'écrit de Kevin GLASS.
+

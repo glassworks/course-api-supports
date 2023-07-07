@@ -1,6 +1,6 @@
 # Le Event-Loop
 
-Une des fonctionnalités les plus importantes de NodeJs est sa façon de gérer les instructions asynchrones via son `event loop`. On à la possibilité d'écrire du code qui gère une multitude d'actions en parallèle, sans toute la complexité autour du parallélisme.
+Une des fonctionnalités les plus importantes de NodeJs est sa façon de gérer les instructions asynchrones via son `event loop`. On a la possibilité d'écrire du code qui gère une multitude d'actions en parallèle, sans toute la complexité autour du parallélisme.
 
 Considérer le code suivant :
 
@@ -45,7 +45,7 @@ node src/eventloop.js
 
 Vous arrivez à expliquer le résultat ?
 
-Si on utilise une fonction `readFileSync` on bloque **tout le processus node** pendant le chargement du fichier. C'est très embêtant si on a beaucoup de requêtes en parallèle - toutes les autres requêtes doivent attendre avant d'être traités, et si la connexion subit un timeout, tant-pis !
+Si on utilise une fonction `readFileSync` on bloque **tout le processus node** pendant le chargement du fichier. C'est très embêtant si on a beaucoup de requêtes en parallèle — toutes les autres requêtes doivent attendre avant d'être traités, et si la connexion subite un timeout, tant pis !
 
 Javascript permet de lancer le chargement, et continuer à traiter d'autres instructions entre-temps, grâce au système **event loop** :
 
@@ -57,15 +57,15 @@ Toutes les instructions synchrones sont "push" sur le stack et traitées une par
 
 <figure><img src="../.gitbook/assets/event-loop-2.svg" alt=""><figcaption></figcaption></figure>
 
-Dès qu'on rencontre une instruction asynchrone, le moteur JS, la retire du Call Stack et planifie don éxécution sans les API's correspondants.
+Dès qu'on rencontre une instruction asynchrone, le moteur JS, la retire du Call Stack et planifie don exécution sans les API's correspondants.
 
 <figure><img src="../.gitbook/assets/event-loop-3.svg" alt=""><figcaption></figcaption></figure>
 
-Cette fonction peut donc être exécuté dans un _**thread pool**_, et souvent sur un processeur indépendant (selon l'architecture de votre machine). Entre-temps, on continue dans notre script, en ajoutant l'instruction suivante au Call Stack :
+Cette fonction peut donc être exécutée dans un _**thread pool**_, et souvent sur un processeur indépendant (selon l'architecture de votre machine). Entre-temps, on continue dans notre script, en ajoutant l'instruction suivante au Call Stack :
 
 <figure><img src="../.gitbook/assets/event-loop-4.svg" alt=""><figcaption></figcaption></figure>
 
-Imaginons que pendant l'exécution de cette instruction, le chargement de notre fichier s'abouti. Le `callback` qui a été envoyé comme paramètre à la fonction et ajouté au Callback Queue : un fil d'attente des callbacks à exécuter dès que le Call Stack devient vide.
+Imaginons que pendant l'exécution de cette instruction, le chargement de notre fichier s'aboutit. Le `callback` qui a été envoyé comme paramètre à la fonction et ajouté au Callback Queue : un fil d'attente des callbacks à exécuter dès que le Call Stack devient vide.
 
 <figure><img src="../.gitbook/assets/event-loop-5.svg" alt=""><figcaption></figcaption></figure>
 
@@ -90,16 +90,18 @@ Ensuite, on arrive à la fin du script principal, on enlève `main()`. Le event 
 
 <figure><img src="../.gitbook/assets/event-loop-7.svg" alt=""><figcaption></figcaption></figure>
 
-Ensuite on exécute ce callback comme un fonction normal :
+Ensuite, on exécute ce callback comme une fonction normal :
 
 <figure><img src="../.gitbook/assets/event-loop-8.svg" alt=""><figcaption></figcaption></figure>
 
 Quand le CallStack est vide ainsi que le Callback Queue, c'est la fin de notre script.
 
+
 ## Avantages
 
 Il y a plusieurs avantages de cette approche :
 
-* La gestion des APIs Async se fait par le `thread pool`, qui gère la complexité de programmation parallèle pour nous. Les moteurs comme v8 vont essayer d'optimiser les nombre de threads en parallèles selon le nombre de coeurs disponibles sur notre machine.
-* Une opération longue (chargement de fichier, par ex.) ne va pas bloquer d'autres activités.
+* La gestion des APIs Async se fait par le `thread pool`, qui gère la complexité de programmation parallèle pour nous. Les moteurs comme v8 vont essayer d'optimiser les nombre de threads en parallèles selon le nombre de cœurs disponibles sur notre machine.
+* Une longue opération (chargement de fichier, par ex.) ne va pas bloquer d'autres activités.
 * Pour une appli de type serveur, cela veut dire qu'on peut accepter un grand nombre de requêtes en parallèle (sans le rejeter pour manque de ressources)
+

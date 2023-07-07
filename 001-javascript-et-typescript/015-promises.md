@@ -1,6 +1,6 @@
 # Promise
 
-Dans les versions anciennes de JS, on se trouvait souvent à dans la situation de **callback hell** ... c'est à dire, dans un callback, on fait encore une opération asynchrone, et ainsi de suite. Notre code ressemblait au suivant :
+Dans les versions anciennes de JS, on se trouvait souvent dans la situation de **callback hell** ... c'est-à-dire, dans un callback, on fait encore une opération asynchrone, et ainsi de suite. Notre code ressemblait au suivant :
 
 ```js
 var floppy = require('floppy');
@@ -22,22 +22,22 @@ floppy.load('disk',function(data) {
 });
 ```
 
-Afin de contourner ce problème, la notion de **Promise** a été développé au fil des années :
+Afin de contourner ce problème, la notion de **Promise** a été développée au fil des années :
 
-> Un Promise est un objet qui pourrait produire soit une valeur dans le futur, soit une raison pourquoi elle n'aurait pas pu terminer.
+> Une Promise est un objet qui pourrait produire soit une valeur dans le futur, soit une raison pourquoi elle n'aurait pas pu terminer.
 
-Un Promise est essentiellement un **constructor** qui va retourner un `object` qui contient 3 fonctions :
+Une Promise est essentiellement un **constructor** qui va retourner un `object` qui contient 3 fonctions :
 
-* `then` : une fonction qui prend un _callback_ comme paramètre. Quand le promise termine (avec succès), le callback passé sera invoqué.
+* `then` : une fonction qui prend un _callback_ comme paramètre. Quand la Promise termine (avec succès), le callback passé sera invoqué.
 * `catch`: une fonction qui prend un callback comma paramètre. Si jamais il y a une erreur ou une exception, ce callback sera invoqué à la place de celui de `then`
 * `finally`: une fonction qui prend un callback comma paramètre. Ce callback sera systématiquement appelé après le `then` ou le `catch`.
 
-En construisant un Promise, nous passons un callback comme paramètre qui prend 2 paramètres :
+En construisant une Promise, nous passons un callback comme paramètre qui prend 2 paramètres :
 
-* la référence à une fonction `resolve`, à invoquer quand notre opération longue est complète
+* la référence à une fonction `resolve`, à invoquer quand notre longue opération est complète
 * la référence à une fonction `reject`, à appeler dans le cas d'une erreur
 
-L'exemple suivant démontre la construction d'un Promise :
+L'exemple suivant démontre la construction d'une Promise :
 
 ```js
 const p = new Promise(
@@ -58,9 +58,9 @@ const p = new Promise(
 );
 ```
 
-Ici, on attend 1 seconde avant de résoudre le Promise. Regardez comment on invoque le callback `resolve` seulement dans le callback de l'opération `setTimeout`. Dans le cas d'une erreur, on invoque plutôt le callback `reject`.
+Ici, on attend 1 seconde avant de résoudre la Promise. Regardez comment on invoque le callback `resolve` seulement dans le callback de l'opération `setTimeout`. Dans le cas d'une erreur, on invoque plutôt le callback `reject`.
 
-Ce code fonctionnera tout seul, mais à priori on aimerait _enchaîner_ des opérations asynchrones après. On le fait avec la fonction `then` qui nous permet de préciser le callback à invoquer quand le Promise précédent se résout.
+Ce code fonctionnera tout seul, mais à priori, on aimerait _enchaîner_ des opérations asynchrones après. On le fait avec la fonction `then` qui nous permet de préciser le callback à invoquer quand la Promise précédent se résout.
 
 ```js
 
@@ -314,6 +314,7 @@ exec();
 
 Enveloppez la fonction "setTimeout" dans une fonction qui s'appelle `wait(seconds: number)`, qui prend comme valeur le nombre de secondes à attendre avant de continuer.
 
-Ensuite utilisez cette fonction à plusieurs reprises afin rythmer bien l'emission des valeurs sur le stdout (le rythme de la symphonie n° 5 de Beethoven) :
+Ensuite, utilisez cette fonction à plusieurs reprises afin rythmer bien l'émission des valeurs sur le stdout (le rythme de la symphonie n° 5 de Beethoven) :
 
 Da - pause (0,33s) - Da - pause (0,33s) - Da - pause (0,33s) - Daaaaaaaaaa - pause (3s) etc.
+

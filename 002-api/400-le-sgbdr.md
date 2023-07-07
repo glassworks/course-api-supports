@@ -2,11 +2,11 @@
 
 ## Intégration du SGBDR
 
-On veut maintenant établir une connexion à une base de données, et commencer à ajouter et supprimer les lignes à travers de notre API.
+On veut maintenant établir une connexion à une base de données, et commencer à ajouter et supprimer les lignes au travers de notre API.
 
 ### Dev Container et `docker-compose.yml`
 
-On peut directement inclure une instance d'un SGBDR à notre dev-container grace à docker :
+On peut directement inclure une instance d'un SGBDR à notre dev-container grâce à docker :
 
 {% code title="docker-compose.dev.yml" lineNumbers="true" %}
 ```yml
@@ -88,7 +88,7 @@ on user for each row set new.email = lower(trim(new.email));
 
 ```
 
-### Integration NodeJS
+### Intégration NodeJS
 
 Nous utilisons la librairie [`mysql2`](https://www.npmjs.com/package/mysql2) pour communiquer avec notre base de données.
 
@@ -96,9 +96,9 @@ Nous utilisons la librairie [`mysql2`](https://www.npmjs.com/package/mysql2) pou
 npm install mysql2
 ```
 
-Normalement notre API va ouvrir une connexion unique auprès du SGBDR pour chaque requête en cours. Ceci peut-être lourd et longue, donc le créateur de la librairies à prévu les **connection pools**. C'est à dire, on va essayer de réutiliser les connexions déjà ouvertes.
+Normalement, notre API va ouvrir une connexion unique auprès du SGBDR pour chaque requête en cours. Ceci peut être lourd et long, donc le créateur de la librairie a prévu les **connection pools**. C'est-à-dire, on va essayer de réutiliser les connexions déjà ouvertes.
 
-Moi je préfère créer une classe qui enveloppe l'objet principal, pour ne pas répéter du code :
+Moi, je préfère créer une classe qui enveloppe l'objet principal, pour ne pas répéter du code :
 
 {% code title="utility/DB.ts" lineNumbers="true" %}
 ```ts
@@ -133,7 +133,7 @@ export class DB {
 ```
 {% endcode %}
 
-Ici, on crée une variable static, et on initialise notre **pool** avec les coordonnées tirés de l'environnement (ou des valeurs par défaut).
+Ici, on crée une variable static, et on initialise notre **pool** avec les coordonnées tirées de l'environnement (ou des valeurs par défaut).
 
 ### Opérations CRUD
 
@@ -241,7 +241,7 @@ Quand on va récupérer `request.query`, par exemple, l'objet typescript retourn
 
 Comment on précise un type ? Voici quelques exemples.
 
-D'abord, nous allonw reproduire le schéma de nos données en Typescript. Voici, par exemple, le schema de notre table `User` représenté en Typescript :
+D'abord, nous allons reproduire le schéma de nos données en Typescript. Voici, par exemple, le schéma de notre table `User` représenté en Typescript :
 
 {% code title="model/IUser.ts" lineNumbers="true" %}
 ```ts
@@ -262,9 +262,9 @@ export type IUserRO = Readonly<IUser>;
 ```
 {% endcode %}
 
-Nous allons préciser aussi des types retournées par nos interrogations avec la base SQL.
+Nous allons préciser aussi des types retournés par nos interrogations avec la base SQL.
 
-La première interrogation est du type **indexe**, où on cherche plusieurs lignes avec pagination. Nous précisions la requête et la réponse :
+La première interrogation est du type **indexe**, où on cherche plusieurs lignes avec pagination. Nous spécifiions la requête et la réponse :
 
 {% code title="types/IIndexQuery.ts" lineNumbers="true" %}
 ```ts
@@ -298,7 +298,7 @@ export interface ITableCount {
 ```
 {% endcode %}
 
-Ensuite, pour la requête de **creation** d'une ligne :
+Ensuite, pour la requête de **création** d'une ligne :
 
 
 {% code title="types/ICreateResponse.ts" lineNumbers="true" %}
@@ -364,7 +364,7 @@ app.listen(PORT,
 Notez bien la ligne `app.use('/user', ROUTES_USER);`.
 
 {% hint style="success" %}
-Si vous ne l'avez pas encore fait, ajouter la ligne `"forwardPorts": [ 5050 ]` à votre fichier `.devcontainer/devcontainer.json`. Ceci permet à votre server d'être accessible en dehors de votre container VSCode.
+Si vous ne l'avez pas encore fait, ajouter la ligne `"forwardPorts": [ 5050 ]` à votre fichier `.devcontainer/devcontainer.json`. Ceci permet à votre serveur d'être accessible en dehors de votre container VSCode.
 
 Testez les deux endpoints avec PostMan :
 * `GET http://localhost:5050/user`
@@ -373,13 +373,13 @@ Testez les deux endpoints avec PostMan :
 
 ## Transactions
 
-Regardez la documentation pour la librairie `mysql2`. Vous allez remarquer des fonctions suivants :
+Regardez la documentation pour la librairie `mysql2`. Vous allez remarquer des fonctions suivantes :
 
 - `beginTransaction()`
 - `commit()`
 - `rollback()`
 
-Ce sont des fonctions qui emettent simplement des commandes equivalents en SQL auprès de notre SGBDR.
+Ce sont des fonctions qui émettent simplement des commandes équivalentes en SQL auprès de notre SGBDR.
 
 Vous pouvez donc facilement gérer la cohérence de vos opérations d'écriture en utilisant ces fonctions.
 
@@ -417,7 +417,7 @@ Créez une suite de tests dans Postman afin de valider votre API.
 
 La solution entière se trouve [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/001-basic-crud-routes-express).
 
-On commence par créer un **Router** dans express qui gère le sous-route `/:userId` :
+On commence par créer un **Router** dans express qui gère la sous-route `/:userId` :
 
 ```ts
 const routerSingle = Router({ mergeParams: true });
@@ -523,18 +523,18 @@ Essayez de rentrer des mauvaises informations via Postman :
 * Passer du texte dans le query param de la requête index (pour limit et offset)
 * Afficher, mettre à jour, ou supprimer un utilisateur qui n'existe pas
 
-Pour l'instant, on reçois un message moche (pas en json) et pas très parlant dans Postman.
+Pour l'instant, on reçoit un message moche (pas en json) et pas très parlant dans Postman.
 
 Ajoutez un middleware qui gère les erreurs :
 
 * Renvoyez plutôt du json
-* Avoir au moins le champs suivants :
+* Avoir au moins le champ suivants :
   * `code` : le code HTTP approprié
     * `400` : la requête est mauvaise (erreur dans les données entrantes)
     * `401` : pas autorisé
     * `404` : élément pas trouvé
     * `500` : erreur interne (dernier recours)
-  * `structured` : un champ plus libre mais plus structuré qui permettrait de localiser l'erreur coté front. Exemple :
+  * `structured` : un champ plus libre, mais plus structuré qui permettrait de localiser l'erreur coté front. Exemple :
     * `params-invalid`
     * `connection-error`
     * `auth/unknown-email`
@@ -573,8 +573,7 @@ export class ApiError {
 
 ```
 
-Cette classe contient notamment une fonction permettant d'exporter l'erreur en format JSON selon la description de ce problème. Les `code` et `structured` sont les énumérations des différents possibilités :
-
+Cette classe contient notamment une fonction permettant d'exporter l'erreur en format JSON selon la description de ce problème. Les `code` et `structured` sont les énumérations des différentes possibilités :
 
 ```ts
 // Les numéros de d'erreur standard de HTTP
@@ -606,7 +605,7 @@ export type StructuredErrors =
 ;
 ```
 
-Ensuite, nous allons rédiger un **handler** (middleware) qui prend 4 paramètres pour que Express l'utilise pour gérer des erreurs :
+Ensuite, nous allons rédiger un **handler** (middleware) qui prend 4 paramètres pour qu'Express l'utilise pour gérer des erreurs :
 
 
 ```ts
@@ -646,7 +645,7 @@ export const DefaultErrorHandler = async (error: any, req: Request, res: Respons
 }
 ```
 
-Notez les paramètres de notre `DefaultErrorHandler`. On accepte comme premier paramètre une erreur inconnue. Ensuite, on construit l'erreur formaté à l'aide de notre classe `ApiError`. Enfin, on renvoie une réponse avec le code HTTP et le json représentant l'erreur.
+Notez les paramètres de notre `DefaultErrorHandler`. On accepte comme premier paramètre une erreur inconnue. Ensuite, on construit l'erreur formatée à l'aide de notre classe `ApiError`. Enfin, on renvoie une réponse avec le code HTTP et le json représentant l'erreur.
 
 
 </details>
@@ -657,4 +656,5 @@ Essayez d'ajouter une autre table à votre base, e.g. `repas` (vous pouvez vous 
 
 Ajoutez des endpoints CRUD pour cette table.
 
-Essayez au maximum de remanier votre code. Est-ce qu'il y a des éléments qu'on peut réutiliser pour les opération CRUD classiques ?
+Essayez au maximum de remanier votre code. Est-ce qu'il y a des éléments qu'on peut réutiliser pour les opérations CRUD classiques ?
+

@@ -2,7 +2,7 @@
 
 > Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/007-deploy-monitor)
 
-Il est essentiel qu'on puisse suivre les logs générés par notre API. Bien sur, il est possible juste de se connecter à l'instance qui tourne notre API, puis :
+Il est essentiel que l'on puisse suivre les logs générés par notre API. Bien sûr, il est possible juste de se connecter à l'instance qui tourne notre API, puis :
 
 ```sh
 # Afficher les logs d'un container docker
@@ -13,7 +13,7 @@ Si on a l'intention d'avoir plusieurs instances de notre API, sur plusieurs inst
 
 Ici, on va faire rediriger tous nos logs vers une base NoSQL (mongodb) centralisé via un stack de plusieurs outils :
 
-- `filebeat` : un service qui devrait être déployé sur tous les instances de notre cloud qui va surveiller les journaux Docker sur chaque instance, et les envoyer vers un service centralisé pour traitement (`logstash`)
+- `filebeat` : un service qui devrait être déployé sur toutes les instances de notre cloud qui va surveiller les journaux Docker sur chaque instance, et les envoyer vers un service centralisé pour traitement (`logstash`)
 - `logstash` : qui tourne sur une instance dans notre cloud, et qui accepte tous les logs envoyés de partout, transforme/filtre les logs, et ensuite les insère dans notre MongoDB
 - `mongodb` : notre base de données pour stocker et interroger des journaux
 
@@ -81,7 +81,7 @@ logging.metrics.enabled: false
 
 Ce fichier précise plusieurs choses :
 
-- D'extraire uniquement les logs des container avec le `label` de `api_logging: true`. Vous souvenez qu'on a [ajouté cet étiquette juste avant](./001-variables.md) ?
+- D'extraire uniquement les logs des containers avec le `label` de `api_logging: true`. Vous souvenez qu'on a [ajouté cet étiquette juste avant](./001-variables.md) ?
 - Décoder le message (qui est en format JSON)
 - Envoyer les messages vers `logstash`
 
@@ -114,7 +114,7 @@ FROM docker.elastic.co/logstash/logstash:7.17.3
 RUN bin/logstash-plugin install --version=3.1.5 logstash-output-mongodb && bin/logstash-plugin install logstash-filter-age
 ```
 
-Logstash a besoin d'une configuration aussi (`loggin/logstash.conf`) :
+Logstash a besoin d'une configuration aussi (`logging/logstash.conf`) :
 
 
 ```conf
@@ -192,7 +192,7 @@ Ici, on précise notamment qu'on va pouvoir accéder à cette base du port 5055.
 
 ## `docker-compose.logging.yml` entier
 
-Voici le fichier complèt :
+Voici le fichier complet :
 
 ```yml
 version: '3.8'
@@ -257,7 +257,7 @@ Vous pouvez ensuite lancer votre stack de logging :
 docker compose -f docker-compose.logging.yml up -d
 ```
 
-A tout moment, on peut arrêter et débogguer le stack de logging sans interrompre notre stack de production. Pratique !
+A tout moment, on peut arrêter et déboguer le stack de logging sans interrompre notre stack de production. Pratique !
 
 Télécharger un client mongodb ([MongoDB Compass](https://www.mongodb.com/try/download/shell) ou [Table Plus](https://tableplus.com)).
 
@@ -271,7 +271,7 @@ mongodb://[votre adresse IP]:5055/api-logs
 
 {% hint style="warning" %}
 
-Nous n'avons pas ajouter de la sécurisation sur notre instance MongoDB. Il faut faire attention à la sécuriser sur une vrai installation de production !
+Nous n'avons pas ajouté de la sécurisation sur notre instance MongoDB. Il faut faire attention à la sécuriser sur une vraie installation de production !
 
 {% endhint %}
 

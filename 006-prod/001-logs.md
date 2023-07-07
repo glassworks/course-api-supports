@@ -5,7 +5,7 @@
 
 Nous allons préparer notre API pour déploiement en lui donnant une façon de créer des journaux pertinents.
 
-D'abord, nous allons installer des modules qui permettent de créer des journaux en format JSON, et permette de extraire des informations concernant les requêtes auprès de notre API:
+D'abord, nous allons installer des modules qui permettent de créer des journaux en format JSON, et permettent d'extraire des informations concernant les requêtes auprès de notre API:
 
 ```bash
 # Formater des logs comme on veut
@@ -73,7 +73,7 @@ export const LogError = (message: string, data?: unknown) => {
 }
 ```
 
-On aura juste à emettre, n'importe où dans le code :
+On aura juste à émettre, n'importe où dans le code :
 
 ```
   ...
@@ -133,7 +133,7 @@ export const requestLogMiddleware = (tag: LogTag) => {
 }
 ```
 
-Notez ici on change l'information selon l'environnement aussi. On récupère un certain quantité d'information à chaque requête. 
+Notez ici, on change l'information selon l'environnement aussi. On récupère une certaine quantité d'information à chaque requête.
 
 Enfin on va attacher ce middleware à notre serveur (`src/server.ts`) :
 
@@ -184,7 +184,7 @@ app.listen(PORT,
 
 ```
 
-Essayer de lancer l'API et exécuter quelques requêtes. Vous verrez les journaux en format text. Essayer d'utiliser l'environnement de prod :
+Essayer de lancer l'API et exécuter quelques requêtes. Vous verrez les journaux en format texte. Essayer d'utiliser l'environnement de prod :
 
 ```bash
 NODE_ENV=prod npm run server

@@ -10,7 +10,8 @@ Nous commençons des nouveaux projets node en initialisant le projet. Dans le te
 npm init
 ```
 
-Vous répondez à toutes les questions. A l'issue de cette instruction est le fichier crucial au projet : `package.json`
+Vous répondez à toutes les questions. À l'issue de cette instruction est le fichier crucial au projet : `package.json`
+
 
 ```json
 {
@@ -33,8 +34,8 @@ Le fichier `package.json` est l'indexe de votre projet. Il contient plusieurs in
 
 * Son nom, sa version etc.
 * `scripts`: La liste de commandes possibles avec `npm run ...`.&#x20;
-* `dependencies`: Les librairies tierces venant des dépôts node à inclure dans notre projet. Ce sont la liste essentiel pour tourner notre projet en production.
-* `devDependencies`: Les librairies supplémentaires pour compléter notre environnement de dev. Typiquement ce sont les librairies de test, ou des types à inclure (si on utilise TypeScript)
+* `dependencies`: Les librairies tierces venant des dépôts node à inclure dans notre projet. C'est la liste essentielle pour tourner notre projet en production.
+* `devDependencies`: Les librairies supplémentaires pour compléter notre environnement de dev. Typiquement, ce sont les librairies de test, ou des types à inclure (si on utilise TypeScript)
 
 Les entrées `dependencies` et `devDependencies` sont automatiquement gérés par la commande `npm`. En effet `npm` est le **node package manager** et on l'utilise pour installer, mettre à jour, ou enlever les librairies.
 
@@ -57,7 +58,7 @@ On voit que `package.json` s'est mis à jour automatiquement :
 
 On voit apparaître le dossier `node_modules` qui contient toutes les librairies tierces de notre projet.
 
-D'autres commands de `npm` sont :
+D'autres commandes de `npm` sont :
 
 ```shell
 # Installer ou réinstaller tous les dépendances
@@ -83,15 +84,15 @@ npm update
 
 ```
 
-Les packages déployés par npm évolue en utilisant un système de versioning :
+Les packages déployés par npm évoluent en utilisant un système de versioning :
 
 ```
 [version majeur].[version mineur].[version patch]
 ```
 
-* **Patch** : sont les corrections de bug, et ne change pas le comportement ou compatibilité de la librairie
-* **Version mineur** : Normalement retro-compatible dans la même version mineur, mais peut-être avec des refactoring ou des modifications (normalement ajouts) plus importants
-* **Version majeur** : Risque de casser votre projet, il y aura des **breaking changes**, modifications qui risque de casser votre code, par exemple, changer l'API, enlever les fonctions obsolètes, etc.
+* **Patch** : sont les corrections de bug, et ne changent pas le comportement ou compatibilité de la librairie
+* **Version mineure** : Normalement rétrocompatible dans la même version mineure, mais peut-être avec des refactoring ou des modifications (normalement ajouts) plus importants
+* **Version majeure** : Risque de casser votre projet, il y aura des **breaking changes**, modifications qui risquent de casser votre code, par exemple, changer l'API, enlever les fonctions obsolètes, etc.
 
 Dans `package.json` nous pouvons exprimer les limites de `npm update`, en utilisant les symboles suivants :
 
@@ -99,13 +100,13 @@ Dans `package.json` nous pouvons exprimer les limites de `npm update`, en utilis
 
 [Source de l'image](https://bytearcher.com/goodies/semantic-versioning-cheatsheet/)
 
-Dans `package.json` si on voit:
+Dans `package.json` si on voit :
 
-* un tilde `~` devant la version : on va fixer la version mineur, mais autoriser les mises à jours de la version patch
-* un caret `^` devant la version : on va fixer la version majeur, mais autoriser les mises à jours de la version mineur
-* aucune symbole devant la version : on ne va jamais mettre à jour la version
+* un tilde `~` devant la version : on va fixer la version mineure, mais autoriser les mises à jour de la version patch
+* un caret `^` devant la version : on va fixer la version majeure, mais autoriser les mises à jour de la version mineure
+* aucun symbole devant la version : on ne va jamais mettre à jour la version
 
-On peut aussi préciser la version majeur, et laisser `npm` choisir la version mineur et patch automatiquement :
+On peut aussi préciser la version majeure, et laisser `npm` choisir la version mineure et patch automatiquement :
 
 ```
 # Install la toute dernière version de express@3.*.*
@@ -117,7 +118,7 @@ npm install express@~4.18
 
 ## Mon premier script avec NodeJS
 
-Nous allons créer une nouveau fichier `src/hello.js` :
+Nous allons créer un nouveau fichier `src/hello.js` :
 
 ```js
 console.log("Hello world");
@@ -144,7 +145,7 @@ On peut utiliser un _shebang_ qui permet de rendre notre script exécuter comme 
 console.log("Hello world !");
 ```
 
-Et en rendant notre fichier exécutable, on pourrait l'invoquer comme un script shell:
+Et, en rendant notre fichier exécutable, on pourrait l'invoquer comme un script shell:
 
 ```bash
 # Rendre le fichier exécutable
@@ -176,11 +177,11 @@ On lance notre script avec :
 npm run hello
 ```
 
-Le champs `scripts` est très utile pour créer et configurer plusieurs façons de lancer notre code :
+Le champ `scripts` est très utile pour créer et configurer plusieurs façons de lancer notre code :
 
 * Lancer le serveur en mode développement
 * Lancer le serveur en mode production
-* Lancer un script d'utilité qui, par exemple agit de façon ponctuelle sur votre base de données
+* Lancer un script d'utilité qui, par exemple, agit de façon ponctuelle sur votre base de données
 * Lancer des tests
 * Lancer des outils de validation de votre code (linter, orthographe, etc)
 
@@ -191,7 +192,7 @@ Par exemple, on aimerait que notre code se lance automatiquement dès qu'on appo
 npm install nodemon --save-dev
 ```
 
-L'option `--save-dev` précise que ce dépendance n'est utile que pour l'environnement de développement. Justement, si on regarde `package.json`, on voit qu'il y a une nouvelle section qui s'appelle `devDependencies` :
+L'option `--save-dev` précise que cette dépendance n'est utile que pour l'environnement de développement. Justement, si on regarde `package.json`, on voit qu'il y a une nouvelle section qui s'appelle `devDependencies` :
 
 ```json
   ...
@@ -201,9 +202,10 @@ L'option `--save-dev` précise que ce dépendance n'est utile que pour l'environ
   ...
 ```
 
-Ces dépendances sont ignorées lors de la mise en production. L'idée est d'optimiser l'artifact de production et exclure tous les modules qui ne sont pas utiles ou potentiellement risqués.
+Ces dépendances sont ignorées lors de la mise en production. L'idée est d'optimiser l'artéfact de production et exclure tous les modules qui ne sont pas utiles ou potentiellement risqués.
 
 On modifie notre `package.json` afin d'utiliser `nodemon` au lieu de node :
+
 
 #### **package.json**
 
@@ -222,6 +224,7 @@ Relancez votre script :
 npm run hello
 ```
 
-Si on modifie `src/hello.js`, on vois que `nodemon` relance le script à chaque fois qu'on le sauvegarde. :fire: Pratique ! :fire:
+Si on modifie `src/hello.js`, on voit que `nodemon` relance le script à chaque fois qu'on le sauvegarde. :fire: Pratique ! :fire:
 
-A noter : Si nodemon ne relance pas votre script après une modification, il faut ajouter l'option `-L` pour activer le **legacy polling**.
+À noter : Si nodemon ne relance pas votre script après une modification, il faut ajouter l'option `-L` pour activer le **legacy polling**.
+

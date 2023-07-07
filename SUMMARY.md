@@ -17,18 +17,22 @@
 * [Le SGBDR](002-api/400-le-sgbdr.md)
 
 ## Securisation de l'API
+
 * [Identité et autorisation](003-security/001-autorisation.md)
 * [Validation des données](003-security/010-validation.md)
 * [HTTPS](003-security/050-https.md)
 
 ## Documentation
+
 * [Documentation](004-docs/001-documentation.md)
 
 ## Gestion des fichiers
+
 * [Fichiers](005-files/001-fichiers.md)
 
 
 ## Mise en production
+
 * [Logs](006-prod/001-logs.md)
 * [Variables d'environnement](006-prod/001-variables.md)
 * [Stack de logging](006-prod/020-logging.md)
