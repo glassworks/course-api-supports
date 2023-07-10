@@ -55,19 +55,19 @@ Ensuite, vous pouvez créer votre base de données, l'utilisateur pour notre api
 
 ```sql
 /*
-Script de création de la base de données de test.
+Script de création de la base de données.
 A noter, on utilise uns stratégie avec DROP et IF NOT EXISTS afin de rendre 
 notre script réutilisable dans le future, même si la base existe déjà
 */
-create database IF NOT EXISTS test;
+create database IF NOT EXISTS school;
 
 /* Créer l'utilisateur API */
 create user IF NOT EXISTS 'api-dev'@'%.%.%.%' identified by 'api-dev-password';
-grant select, update, insert, delete on test.* to 'api-dev'@'%.%.%.%';
+grant select, update, insert, delete on school.* to 'api-dev'@'%.%.%.%';
 flush privileges;
 
 /* La définition de la schéma */
-use test;
+use school;
 
 /* user */
 create table if not exists user (
@@ -121,7 +121,7 @@ export class DB {
       this.POOL = mysql.createPool({
         host: process.env.DB_HOST || 'dbms',
         user: process.env.DB_USER || 'api-dev',
-        database: process.env.DB_DATABASE || 'test',
+        database: process.env.DB_DATABASE || 'school',
         password: process.env.DB_PASSWORD || 'api-dev-password',  
       });
     }

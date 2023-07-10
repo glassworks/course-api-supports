@@ -53,7 +53,7 @@ Par exemple, j'aimerais permettre à un utilisateur de mon API de télécharger 
 
 ```sql
 /* La définition de la schéma */
-use test;
+use school;
 
 /* user */
 create table if not exists user (
@@ -87,7 +87,7 @@ J'appelle l'ID du fichier dans le cloud `storageKey`
 Pour mettre à jour ma base de données, je fais :
 
 ```
-mycli -h dbms -u root test < ./dbms/ddl/ddl.sql 
+mycli -h dbms -u root school < ./dbms/ddl/ddl.sql 
 ```
 
 Dans notre API, nous allons préciser à Typescript l'existence de cette nouvelle table. Dans `src/model/DbTable.ts` :

@@ -32,7 +32,7 @@ services:
       - DB_HOST=stage-dbms
       - DB_USER=api-stage
       - DB_PASSWORD=api-stage-password
-      - DB_DATABASE=mtdb_stage     
+      - DB_DATABASE=school     
       - AWS_ACCESS_KEY_ID=
       - AWS_SECRET_ACCESS_KEY=
       - STORAGE_REGION=fr-par
