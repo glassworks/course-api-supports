@@ -26,7 +26,6 @@ On peut directement inclure une instance d'un SGBDR à notre dev-container grâc
     ]
     volumes:
       - ./dbms/dbms-data:/var/lib/mysql
-      - ./dbms/mariadb.cnf:/etc/mysql/mariadb.cnf
     networks:
       - api-network
 ```
@@ -34,9 +33,8 @@ On peut directement inclure une instance d'un SGBDR à notre dev-container grâc
 
 Il faut faire le suivant :
 
-* Ajouter les lignes dessus à `docker-compose.dev.yml`
+* Ajouter les lignes dessus à `docker-compose.dev.yml` sous l'option `services`.
 * Ajouter le dossier `dbms`
-* Ajouter le fichier `mariadb.cnf` dans le dossier `dbms`. [Trouver un exemple ici](https://docs.glassworks.tech/sgbdr/operations/001-operations-docker#options-de-production-mariadb)
 * Rebuilder votre DevContainer dans VSCode.
 * Le SGBDR est désormais disponible.
 
@@ -62,7 +60,7 @@ notre script réutilisable dans le future, même si la base existe déjà
 create database IF NOT EXISTS school;
 
 /* Créer l'utilisateur API */
-create user IF NOT EXISTS 'api-dev'@'%.%.%.%' identified by 'api-dev-password';
+create user IF NOT EXISTS 'api-dev'@'%.%.%.%' identified by 'apipassword';
 grant select, update, insert, delete on school.* to 'api-dev'@'%.%.%.%';
 flush privileges;
 
@@ -122,7 +120,7 @@ export class DB {
         host: process.env.DB_HOST || 'dbms',
         user: process.env.DB_USER || 'api-dev',
         database: process.env.DB_DATABASE || 'school',
-        password: process.env.DB_PASSWORD || 'api-dev-password',  
+        password: process.env.DB_PASSWORD || 'apipassword',  
       });
     }
 

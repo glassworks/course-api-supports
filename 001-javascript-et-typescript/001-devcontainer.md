@@ -10,6 +10,8 @@ Notamment, nous allons créer un API avec NodeJS (v.18) qui tourne en Ubuntu Lin
 
 Nous utilisons Docker et VSCode afin de satisfaire ces demandes via leur [Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers).
 
+Il faut d'abord installer Docker et VSCode avant de procéder aux étapes suivantes. Un guide complèt se trouve [ici](https://docs.glassworks.tech/unix-shell/introduction/010-introduction/installation-party).
+
 On crée un container qui tourne une version du système d'exploitation et interprète de notre choix. Idéalement, ce seront les mêmes que l'on utilisera en production (par exemple, Ubuntu Linux).
 
 VSCode s'attache à ce container de plusieurs façons :
@@ -39,9 +41,7 @@ Nous commençons donc par créer ce dossier dans notre dossier de travail, et en
     "extensions": [
       "pmneo.tsimporter",
       "stringham.move-ts",
-      "rbbit.typescript-hero",
-      "ms-vscode.vscode-typescript-tslint-plugin",
-      "streetsidesoftware.code-spell-checker-french"
+      "rbbit.typescript-hero",      
     ]
   },
   // Quelques extensions VSCode à inclure par défaut pour notre projet 
@@ -62,9 +62,7 @@ version: '3.9'
 
 services:
   vscode_api:
-    build: 
-      context: ./
-      dockerfile: ./docker/Dockerfile.dev
+    image: rg.fr-par.scw.cloud/api-code-samples-vscode/vscode_api:1.0.0
     command: /bin/bash -c "while sleep 1000; do :; done"
     working_dir: /home/dev
     networks:
@@ -79,60 +77,11 @@ networks:
 ```
 {% endcode %}
 
-Remarquez le service `vscode_api`, qui finalement tourne une commande `/bin/bash` en boucle infinie. VSCode s'attache à ce service. Le container est créé à partir d'une image personnalisée. Les instructions de la création de cette image doivent se trouver dans `docker/Dockerfile.dev` :
-
-{% code title="docker/Dockerfile.dev" lineNumbers="true" %}
-```docker
-FROM node:18
-# Forcer le faite d'utiliser les miroirs français quand on utilise apt ...
-# Attention, le chemin source est rélative à l'emplacement du fichier docker-compose
-COPY ./docker/sources.list /etc/apt/sources.list
-
-# Créer l'utilisateur et son groupe, installer des paquets
-RUN apt-get update \        
-    && apt-get install -y sudo \
-    && apt-get install -y less \
-    && apt-get install -y mycli \
-    && apt-get install -y tzdata \    
-    && npm install -g typescript \
-    && npm install -g ts-node
-
-# Fixer le fuseau horaire
-ENV TZ Europe/Paris
-
-# L'interprète par défaut
-ENV SHELL /bin/bash
-
-# Le repertoire maison par défaut
-WORKDIR /home/dev
-
-RUN /bin/bash
-```
-{% endcode %}
-
-Enfin, remarquez que le Dockerfile remplace un fichier dans /etc/apt/sources.list par une version dans docker/sources.list. C'est la liste de dépôts Ubuntu duquel on charge les paquets connus par apt. Pour fonctionner dans l'école (sans être bloqué) on est obligé de passer par des miroirs français :
-
-{% code title="docker/sources.list" lineNumbers="true" %}
-```
-# Privilégier d'abord les miroirs français
-
-deb http://ftp.fr.debian.org/debian bullseye main
-deb http://ftp.fr.debian.org/debian-security bullseye-security main
-deb http://ftp.fr.debian.org/debian bullseye-updates main
-
-# En derniers recours, essayez les dépôts principaux
-
-# deb http://deb.debian.org/debian bullseye main
-# deb http://security.debian.org/debian-security bullseye-security main
-# deb http://deb.debian.org/debian bullseye-updates main
-```
-{% endcode %}
-
-Si jamais vous avez un souci de version (et vous n'êtes pas à l'école) vous pouvez décommenter les dernières lignes pour utiliser les dépôts officiaux.
+Remarquez le service `vscode_api`, qui finalement tourne une commande `/bin/bash` en boucle infinie. VSCode s'attache à ce service. Le container est créé à partir d'une image que je vous ai déjà crée.
 
 Nous sommes prêts à lancer notre Dev Container. Vérifiez bien la structure de votre projet VSCode.
 
-<figure><img src="../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="./structure.png" alt=""><figcaption></figcaption></figure>
 
 Vous pouvez ensuite lancer votre Dev Container en appuyant sur **F1**, et puis **Dev Containers : Rebuild and Reopen in Container**.
 
@@ -163,3 +112,12 @@ ts-node -v
 tsc -v
 # Version 5.0.4
 ```
+
+{% hint style="danger" %}
+Si vous avez des difficultés à démarrer votre dev-container, essayez ce qui suit :
+
+- Ouvrez le Docker Dashboard, et essayez de supprimer tous les conteneurs qui pourraient être en conflit avec votre conteneur.
+- Essayez de lancer `docker system prune -a --volumes` pour vider toutes les caches locales
+- Redémarrez Docker
+- Redémarrez votre ordinateur
+{% endhint %}

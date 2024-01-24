@@ -2,6 +2,13 @@
 
 * [API](README.md)
 
+## Fondamentaux
+
+* [Introduction](000-fondamenteaux/001-intro.md)
+* [HTTP](000-fondamenteaux/001-http.md)
+* [REST](000-fondamenteaux/010-rest.md)
+* [Consommer un API](000-fondamenteaux/015-postman.md)
+
 ## Javascript et Typescript
 
 * [Docker Dev Container](001-javascript-et-typescript/001-devcontainer.md)
@@ -11,8 +18,9 @@
 * [Typescript](001-javascript-et-typescript/010-typescript.md)
 * [Promise](001-javascript-et-typescript/015-promises.md)
 
-## Les bases de l'API
+## Créer son API
 
+* [Introduction](002-api/010-intro.md)
 * [Express](002-api/300-express.md)
 * [Le SGBDR](002-api/400-le-sgbdr.md)
 
