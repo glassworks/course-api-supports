@@ -10,7 +10,7 @@ Bienvenue au cours API, conçu par Kevin Glass, Ph.D.
 
 Les codes sources pour ces supports sont disponibles au lien suivant :
 
-[https://dev.glassworks.tech:18081/courses/api/api-supports](https://dev.glassworks.tech:18081/courses/api/api-supports)
+[https://github.com/glassworks/course-api-supports](https://github.com/glassworks/course-api-supports)
 
 Aidez à l'amélioration des supports ! Si vous constatez une coquille, n'hésitez pas à soumettre un _merge request_. Votre nom sera ajouté à la liste de remerciements !
 
