@@ -55,7 +55,6 @@ Content-Type: application/json
 Le gouvernement français dispose d'un certain nombre d'API qui nous permettent de récupérer des informations publiques.
 
 L'une de ces API concerne les adresses : [https://adresse.data.gouv.fr/api-doc/adresse](https://adresse.data.gouv.fr/api-doc/adresse)
-curl "https://api-adresse.data.gouv.fr/search/?q=8+bd+du+port"
 
 Nous pouvons nous entraîner à envoyer une requête HTTP brute à cette API avec `telnet` ou `openssl`:
 
