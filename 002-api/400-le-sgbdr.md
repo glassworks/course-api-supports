@@ -135,7 +135,7 @@ Ici, on crée une variable static, et on initialise notre **pool** avec les coor
 
 ### Opérations CRUD
 
-Voici un exemple d'un set de **endpoints** pour la gestion de l'utilisateur (code source entière disponible [ici](https://dev.glassworks.tech:18081/courses/api/api-supports/-/tree/master/exemples/mysql)).
+Voici un exemple d'un set de **endpoints** pour la gestion de l'utilisateur (code source entière disponible [ici](https://github.com/glassworks/course-api-supports/tree/main/exemples/mysql)).
 
 {% code title="routes/User.ts" lineNumbers="true" %}
 ```ts
