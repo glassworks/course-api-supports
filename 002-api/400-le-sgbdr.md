@@ -94,7 +94,7 @@ Nous utilisons la librairie [`mysql2`](https://www.npmjs.com/package/mysql2) pou
 npm install mysql2
 ```
 
-Normalement, notre API va ouvrir une connexion unique auprès du SGBDR pour chaque requête en cours. Ceci peut être lourd et long, donc le créateur de la librairie a prévu les **connection pools**. C'est-à-dire, on va essayer de réutiliser les connexions déjà ouvertes.
+Normalement, notre API va ouvrir une connexion unique auprès du SGBDR pour chaque requête en cours. Ceci peut être lourd et chronophage, donc le créateur de la librairie a prévu les **connection pools**. C'est-à-dire, on va essayer de réutiliser les connexions déjà ouvertes.
 
 Moi, je préfère créer une classe qui enveloppe l'objet principal, pour ne pas répéter du code :
 
