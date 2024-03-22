@@ -15,6 +15,7 @@ On peut directement inclure une instance d'un SGBDR à notre dev-container grâc
   dbms:
     image: mariadb
     restart: always
+    container_name: my_sql_database
     ports:
       - "3309:3306"
     environment: 
@@ -42,11 +43,18 @@ Docker gère automatiquement les connexions et ports pour nous :
 
 * Le nom d'hôte est le nom du service (`dbms`)
 * Le port est automatiquement mappé par docker, pas besoin de le préciser dans notre code
+* Pour plus facilement identifier notre container dans Docker, on précise un nom avec `container_name`
 
-Vous pouvez connecter à votre SGBDR avec :
+Dans le terminal VSCode, vous pouvez connecter à votre SGBDR avec :
 
 ```sh
 mycli -h dbms -u root
+```
+
+Ou bien, d'un terminal en dehors de VSCode (si vous êtes sur un serveur par exemple): 
+
+```sh
+docker exec -it my_sql_database mariadb -u root -p
 ```
 
 Ensuite, vous pouvez créer votre base de données, l'utilisateur pour notre api, et créer les premières tables :
@@ -551,15 +559,15 @@ D'abord, on crée une classe qui dérive de la classe générique de Javascript 
 
 ```ts
 import { ErrorCode } from './ErrorCode';
-import { IApiError } from './IApiError';
 import { StructuredErrors } from './StructuredErrors';
 
 
-export class ApiError {
+export class ApiError extends Error {
   constructor(public httpCode: ErrorCode, public structuredError: StructuredErrors, public errMessage: string, public errDetails?: any) {
+    super(errMessage)
   }
 
-  get json(): IApiError {
+  get json() {
     return {
       code: this.httpCode,
       structured: this.structuredError,
@@ -645,6 +653,11 @@ export const DefaultErrorHandler = async (error: any, req: Request, res: Respons
 
 Notez les paramètres de notre `DefaultErrorHandler`. On accepte comme premier paramètre une erreur inconnue. Ensuite, on construit l'erreur formatée à l'aide de notre classe `ApiError`. Enfin, on renvoie une réponse avec le code HTTP et le json représentant l'erreur.
 
+Utilisez le `DefaultErrorHandler` comme middleware sur votre serveur :
+
+```ts
+app.use(DefaultErrorHandler);
+```
 
 </details>
 
