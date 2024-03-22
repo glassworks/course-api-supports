@@ -41,6 +41,6 @@
 
 ## Mise en production
 
-* [Logs](006-prod/001-logs.md)
-* [Variables d'environnement](006-prod/001-variables.md)
-* [Stack de logging](006-prod/020-logging.md)
+* [GIT](007/005-git.md)
+* [Serveur](007/010-server.md)
+* [Docker](007/015-docker.md)
