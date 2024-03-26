@@ -15,14 +15,14 @@ Dans vscode, créez un dossier "keys", et collez les 2 fichiers dedans.
 Modifiez les droits sur la clé privée en émettant, dans le terminal VSCode :
 
 ```sh
-chmod 600 keys/id_rsa
+chmod 600 keys/sshkey.pri
 ```
 
 Maintenant vous pouvez vous connecter à mon serveur avec :
 
 
 ```sh
-ssh -i keys/id_rsa [VOTRE_IDENTIFIANT]@unixshell.hetic.glassworks.tech
+ssh -i keys/sshkey.pri [VOTRE_IDENTIFIANT]@unixshell.hetic.glassworks.tech
 ```
 
 Remplacez VOTRE_IDENTIFIANT par votre adresse email hetic, ayant remplacé le "@" par un ".".
