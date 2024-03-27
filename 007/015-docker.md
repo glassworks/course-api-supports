@@ -88,18 +88,18 @@ Ensuite, collez le suivant :
 version: '3.9'
 
 services:
-  api:
+  api_NOMPRENOM:
     build: 
       context: ./
       dockerfile: ./Dockerfile
-    container_name: api
+    container_name: NOMPRENOM
     ports:
-      - "REMPLACER_CETTE_VALEUR:5050"
+      - "REMPLACER_PORT:5050"
     environment:
       - NODE_ENV=prod
       - PORT=5050      
     networks:
-      - api-network
+      - api-network-NOMPRENOM
     restart: always
     logging:
       driver: "json-file"
@@ -109,11 +109,45 @@ services:
     
 
 networks:
-  api-network:
+  api-network-NOMPRENOM:
     driver: bridge    
 ```
 
-Chaque étudiant dans la classe va écouter sur un port différents. Il faut donc choisir une valeur aléatoire entre 20000 et 30000, et l'utilisez à la place de `REMPLACER_CETTE_VALEUR` dans le texte dessus.
+Chaque étudiant dans la classe va écouter sur un port différents. Il faut donc choisir une valeur aléatoire entre 20000 et 30000, et remplacer les valeurs suivants :
+
+- REMPLACER_PORT &rarr; remplacer ce texte par votre port unique
+- NOMPRENOM &rarr; remplacer ce texte par nom et prénom, tout collé, sans accents, tout en miniscule.
+
+Par exemple, pour moi :
+
+```yaml
+version: '3.9'
+
+services:
+  api_glasskevin:
+    build: 
+      context: ./
+      dockerfile: ./Dockerfile
+    container_name: glasskevin
+    ports:
+      - "6000:5050"
+    environment:
+      - NODE_ENV=prod
+      - PORT=5050      
+    networks:
+      - api-network-glasskevin
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "500m"
+    
+
+networks:
+  api-network-glasskevin:
+    driver: bridge
+```
 
 Sauvegardez le fichier en tapant `Ctrl+O`, puis `Entrer`. Quitter avec `Ctrl+X`.
 
