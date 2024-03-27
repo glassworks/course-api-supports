@@ -174,5 +174,5 @@ Pour mettre à jour votre déploiement, vous allez faire le suivant :
 2. Avec Git, vous faites `add`, `commit`, `push`
 3. Vous vous connectez au serveur distant, et vous naviguez dans le dossier de votre projet
 4. Vous faites `git pull`
-5. Vous recontruisez l'image docker avec `docker compose build api`
+5. Vous recontruisez l'image docker avec `docker compose build`
 6. Vous relancez vos services avec `docker compose down` et ensuit `docker compose up -d`
