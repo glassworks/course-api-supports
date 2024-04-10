@@ -38,7 +38,7 @@ git config --global credential.helper "store --file $HOME/.git-credentials"
 On peut maintenant récupérer notre projet du serveur Git !
 
 ```sh
-git clone [LE CHEMIN DE VOTRE PROJET]
+git clone LE_CHEMIN_DE_VOTRE_PROJET
 ```
 
 Utiliser votre nom d'utilisateur, et le "access token" que vous avez crée dans l'étape précédente.

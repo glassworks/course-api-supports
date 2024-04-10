@@ -172,7 +172,27 @@ Pour mettre à jour votre déploiement, vous allez faire le suivant :
 
 1. Modifier votre code sur votre machine locale
 2. Avec Git, vous faites `add`, `commit`, `push`
-3. Vous vous connectez au serveur distant, et vous naviguez dans le dossier de votre projet
+3. Vous vous connectez au serveur distant, et **vous naviguez dans le dossier de votre projet**
 4. Vous faites `git pull`
 5. Vous recontruisez l'image docker avec `docker compose build`
 6. Vous relancez vos services avec `docker compose down` et ensuit `docker compose up -d`
+
+A tout moment, vous pouvez consulter la liste de containers qui tournent :
+
+```bash
+docker ps
+```
+
+Pour consulter les journaux d'un container :
+
+```bash
+docker logs ID_DU_CONTAINER
+```
+
+Vous pouvez à tout moment arrêter un container et supprimer :
+
+```bash
+docker stop ID_DU_CONTAINER
+docker rm ID_DU_CONTAINER
+```
+

@@ -142,7 +142,7 @@ Ici, on crée une variable static, et on initialise notre **pool** avec les coor
 
 ## Opérations CRUD
 
-Voici un exemple d'un set de **endpoints** pour la gestion de l'utilisateur (code source entière disponible [ici](https://github.com/glassworks/course-api-supports/tree/main/exemples/mysql)).
+Voici un exemple d'un set de **endpoints** pour la gestion de l'utilisateur :
 
 {% code title="routes/user.route.ts" lineNumbers="true" %}
 ```ts
@@ -269,7 +269,6 @@ export const ROUTES_USER = router;
 ```
 {% endcode %}
 
-Il y a plusieurs choses à noter, comme discuté dans les sections suivantes.
 
 
 ## Le formatage des requêtes SQL
@@ -351,6 +350,10 @@ Ajoutez le suivant au debut de notre fichier `user.route.ts` :
 
 {% code title="routes/user.route.ts" lineNumbers="true" %}
 ```ts
+
+const router = Router({ mergeParams: true });
+
+/// AJOUTEZ CETTE FONCTION ICI
 router.use(
   (request: Request, response: Response, next: NextFunction) => {
     console.log("this is a middleware");
@@ -367,7 +370,10 @@ router.use(
     next();
   }
 )
+
+....
 ```
+{% endcode %}
 
 Cette fonction sera appelé systématiquement avant **tous les endpoints** de ce router !
 
