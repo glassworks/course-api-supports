@@ -1,10 +1,9 @@
 # Le SGBDR
 
-## Intégration du SGBDR
 
 On veut maintenant établir une connexion à une base de données, et commencer à ajouter et supprimer les lignes au travers de notre API.
 
-### Dev Container et `docker-compose.yml`
+## Dev Container et `docker-compose.yml`
 
 On peut directement inclure une instance d'un SGBDR à notre dev-container grâce à docker :
 
@@ -94,7 +93,7 @@ on user for each row set new.email = lower(trim(new.email));
 
 ```
 
-### Intégration NodeJS
+## Intégration NodeJS
 
 Nous utilisons la librairie [`mysql2`](https://www.npmjs.com/package/mysql2) pour communiquer avec notre base de données.
 
@@ -141,195 +140,151 @@ export class DB {
 
 Ici, on crée une variable static, et on initialise notre **pool** avec les coordonnées tirées de l'environnement (ou des valeurs par défaut).
 
-### Opérations CRUD
+## Opérations CRUD
 
 Voici un exemple d'un set de **endpoints** pour la gestion de l'utilisateur (code source entière disponible [ici](https://github.com/glassworks/course-api-supports/tree/main/exemples/mysql)).
 
-{% code title="routes/User.ts" lineNumbers="true" %}
+{% code title="routes/user.route.ts" lineNumbers="true" %}
 ```ts
 import { NextFunction, Request, Response, Router } from "express";
-import { OkPacket, RowDataPacket } from 'mysql2';
-import { DB } from '../utility/DB';
-import { ICreateResponse } from '../types/ICreateResponse';
-import { IIndexQuery, IIndexResponse, ITableCount } from '../types/IIndexQuery';
-import { IUser, IUserRO } from '../model/IUser';
+import { ResultSetHeader, RowDataPacket } from "mysql2";
+import { DB } from "../utility/DB";
 
-const routerIndex = Router({ mergeParams: true });
+const router = Router({ mergeParams: true });
 
-routerIndex.get<{}, IIndexResponse<IUserRO>, {}, IIndexQuery>('/',
-  async (request, response, next: NextFunction) => {
-
+// Créer un utilisateur
+router.put('/',
+  async (request: Request, response: Response, next: NextFunction) => {
+    console.log(request.body);
+    
     try {
-
       const db = DB.Connection;
-      
-      // On suppose que le params query sont en format string, et potentiellement
-      // non-numérique, ou corrompu
-      const page = parseInt(request.query.page || "0") || 0;
-      const limit = parseInt(request.query.limit || "10") || 0;
-      const offset = page * limit;
 
-      // D'abord, récupérer le nombre total
-      const count = await db.query<ITableCount[] & RowDataPacket[]>("select count(*) as total from user");      
+      const result = await db.query<ResultSetHeader>(
+        'insert into user set ?',
+        request.body
+      );
 
-      // Récupérer les lignes
-      const data = await db.query<IUserRO[] & RowDataPacket[]>("select userId, familyName, givenName, email from user limit ? offset ?", [limit, offset]);      
-
-      // Construire la réponse
-      const res: IIndexResponse<IUserRO> = {
-        page,
-        limit,
-        total: count[0][0].total,
-        rows: data[0]
-      }
-
-      response.json(res);
-
-    } catch (err: any) {
-      next(err);
-    }
-
-  }
-);
-
-
-routerIndex.post<{}, ICreateResponse, IUser>('/',
-  async (request, response, next: NextFunction) => {
-
-    try {
-      const user = request.body;
-
-      // ATTENTION ! Et si les données dans user ne sont pas valables ?
-      // - colonnes qui n'existent pas ?
-      // - données pas en bon format ?
-
-      const db = DB.Connection;
-      const data = await db.query<OkPacket>("insert into user set ?", user);
-
-      response.json({ 
-        id: data[0].insertId
+      response.send({
+        id: result[0].insertId
       });
-
     } catch (err: any) {
-      next(err);
+      next(err.message)
     }
 
   }
+)
+
+// Lire les utilisateurs
+router.get('/',
+  async (request: Request, response: Response, next: NextFunction) => {
+    
+    const db = DB.Connection;
+
+    const limit = parseInt(request.query.limit as string) || 10;
+    const offset = (parseInt(request.query.page as string) || 0) * limit;
+
+    try {
+      const data = await db.query("select userId, email, familyName, givenName from user limit ? offset ?", [limit, offset]);
+      const count = await db.query<{count: number}[] & RowDataPacket[]>("select count(*) as count from user");
+
+      response.send({
+        total: count[0][0].count,
+        rows: data[0]
+      });
+    } catch (err: any) {
+      next(err.message);
+    }
+
+  }
+)
+
+// Lire un utilisateur avec ID userId
+router.get('/:userId',
+  async (request: Request, response: Response, next: NextFunction) => {
+    console.log(`Le userId est: ${request.params.userId}`);
+
+    const db = DB.Connection;
+    try {
+      const data = await db.query<RowDataPacket[]>('select userId, familyName, givenName, email from user where userId = ?', [ request.params.userId ]);
+
+      response.send(data[0][0]);
+    } catch (err: any) {
+      next(err.message);
+    }
+
+   
+  }
 );
 
-// Regroupé
+// Mettre à jour un utilisteur
+router.patch('/:userId',
+  async (request: Request, response: Response, next: NextFunction) => {
+    console.log(`Le userId est: ${request.params.userId}`);
+    
+    try {
+      const db = DB.Connection;
 
-const routerUser = Router({ mergeParams: true });
-routerUser.use(routerIndex);
+      const result = await db.query<ResultSetHeader>(
+        'update user set ? where userId = ?',
+        [ request.body, request.params.userId ]
+      );
 
-export const ROUTES_USER = routerUser;
+      response.send({
+        id: result[0].insertId
+      });
+    } catch (err: any) {
+      next(err.message)
+    }
+
+    
+  }
+);
+
+// Supprimer un utilisateur
+router.delete('/:userId',
+  async (request: Request, response: Response, next: NextFunction) => {
+    console.log(`Le userId est: ${request.params.userId}`);
+    
+    
+    try {
+      const db = DB.Connection;
+
+      const result = await db.query<ResultSetHeader>(
+        'delete from user where userId = ?',
+        [ request.params.userId ]
+      );
+
+      response.send({
+        id: result[0].insertId
+      });
+    } catch (err: any) {
+      next(err.message)
+    }
+
+  }
+)
+
+export const ROUTES_USER = router;
 ```
 {% endcode %}
 
 Il y a plusieurs choses à noter, comme discuté dans les sections suivantes.
 
-#### L'utilisation des types
 
-Une force de Typescript est le fait de pouvoir contrôler les types du début à la fin, même avec les **génériques**.
-
-En effet, Express est écrit avec les **génériques**. Nous pouvons donc préciser la structure des types qui entre dans le corps du message, dans le params query, et à renvoyer dans la réponse :
-
-```ts
-// la fonction get avec les génériques, précisés entre les balises <...> :
-// 1 - les *params*
-// 2 - la structure de la réponse
-// 3 - la structure du corps (body)
-// 4 - la structure des params query
-routerIndex.get<{}, IIndexResponse<IUserRO>, {}, IIndexQuery>('/',
-```
-
-Quand on va récupérer `request.query`, par exemple, l'objet typescript retourné va conformer à la structure précisée dans le 4ème paramètre. Il serait plus difficile à faire des bêtises !
-
-Comment on précise un type ? Voici quelques exemples.
-
-D'abord, nous allons reproduire le schéma de nos données en Typescript. Voici, par exemple, le schéma de notre table `User` représenté en Typescript :
-
-{% code title="model/IUser.ts" lineNumbers="true" %}
-```ts
-// Définition d'un structure IUser
-// A noter, le ? veut dire que le champ est optionnel
-
-export interface IUser {
-  userId: number;
-  familyName?: string;
-  givenName?: string;
-  email: string;
-}
-
-// Outils de manipulation des types :
-// https://www.typescriptlang.org/docs/handbook/utility-types.html
-// Ici, on rend tous les champs "lecture seul". Typescript ne va pas autoriser l'affectation des champs
-export type IUserRO = Readonly<IUser>;
-```
-{% endcode %}
-
-Nous allons préciser aussi des types retournés par nos interrogations avec la base SQL.
-
-La première interrogation est du type **indexe**, où on cherche plusieurs lignes avec pagination. Nous spécifiions la requête et la réponse :
-
-{% code title="types/IIndexQuery.ts" lineNumbers="true" %}
-```ts
-/**
- * Paramètres de la requête de type **indexe**, notamment pour la pagination.
- */
-export interface IIndexQuery {
-  page?: string;
-  limit?: string;  
-}
-
-/* Ici, on utilise un générique, précisé par <T>
-Ca veut dire qu'on va passer un autre type comme paramètre, qui sera utilisé à sa place
-ex. const res : IIndexResponse<IUser> = {
-  rows: [] // <-- Ici on ne peut juste affecter les structures de type IUser  
-}
-*/
-export interface IIndexResponse<T> {
-  page: number;
-  limit: number;
-  total: number;
-  rows: T[];
-}
-
-/**
- * Structure retourné par MySQL quand on fait une requête de type `count(*)` 
- */
-export interface ITableCount {
-  total: number;
-}
-```
-{% endcode %}
-
-Ensuite, pour la requête de **création** d'une ligne :
-
-
-{% code title="types/ICreateResponse.ts" lineNumbers="true" %}
-```ts
-export interface ICreateResponse {
-  id: number;
-}
-```
-{% endcode %}
-
-
-
-#### Le formatage des requêtes SQL
+## Le formatage des requêtes SQL
 
 Comme toutes les librairies, on évite l'injection SQL en utilisant des fonctionnalités pour échapper les données :
 
 ```ts
 // On met les ?, puis on passe comme 2ème paramètre un tableau des données à injecter, dans l'ordre
-const data = await db.query<IUserRO[] & RowDataPacket[]>("select userId, familyName, givenName, email from user limit ? offset ?", [limit, offset]);      
+const data = await db.query<RowDataPacket[]>("select userId, familyName, givenName, email from user limit ? offset ?", [limit, offset]);      
 ```
 
 Pour les inserts, il est pratique de passer plutôt un objet, et laisser la librairie formuler la requête :
 
 ```ts
-const user: IUser = {
+const user = {
   email: "kevin@nguni.fr",
   familyName: "Glass",
   givenName: "Kevin",
@@ -337,14 +292,16 @@ const user: IUser = {
 const data = await db.query<OkPacket>("insert into user set ?", user);
 ```
 
-### Accrocher les routes à la hiérarchie
+## Accrocher les routes à la hiérarchie
 
 On compose notre application principale par les routes qu'on vient de créer :
 
 {% code title="server.ts" lineNumbers="true" %}
 ```ts
-import Express, { json } from "express";
-import { ROUTES_USER } from "./routes/User";
+import { json } from "body-parser";
+import Express from "express";
+import { join } from 'path';
+import { ROUTES_USER } from "./routes/user.route";
 
 // Récupérer le port des variables d'environnement ou préciser une valeur par défaut
 const PORT = process.env.PORT || 5050;
@@ -352,11 +309,16 @@ const PORT = process.env.PORT || 5050;
 // Créer l'objet Express
 const app = Express();
 
-// L'appli parse le corps du message entrant comme du json
+// Ajouter un 'middleware' lit du json dans le body
 app.use(json());
 
-// Accrocher les routes CRUD de l'utilisateur à la hierarchie
-app.use('/user', ROUTES_USER);
+// Accrocher les routes 'user' à l'api qui se trouvent
+// dans routes/user.route.ts
+app.use('/user', ROUTES_USER)
+
+// Server des fichiers statiques
+app.use('/public', Express.static(join('assets')));
+
 
 // Lancer le serveur
 app.listen(PORT,
@@ -377,150 +339,50 @@ Testez les deux endpoints avec PostMan :
 * `POST http://localhost:5050/user`
 {% endhint %}
 
-## Transactions
+## Middleware
 
-Regardez la documentation pour la librairie `mysql2`. Vous allez remarquer des fonctions suivantes :
+Il arrive que l'on veuille répéter une certaine logique dans un certain nombre routes différents.
 
-- `beginTransaction()`
-- `commit()`
-- `rollback()`
+Par exemple, l'authentification d'un utilisateur avant l'exécution d'une opération.
 
-Ce sont des fonctions qui émettent simplement des commandes équivalentes en SQL auprès de notre SGBDR.
+Pour ce faire, nous utilisons un "middleware", une fonction intermédiaire qui est appelée avant le endpoint final.
 
-Vous pouvez donc facilement gérer la cohérence de vos opérations d'écriture en utilisant ces fonctions.
+Ajoutez le suivant au debut de notre fichier `user.route.ts` :
 
+{% code title="routes/user.route.ts" lineNumbers="true" %}
 ```ts
-  
-  const db = DB.Connection;   
-  
-  await db.beginTransaction();
-  try {
+router.use(
+  (request: Request, response: Response, next: NextFunction) => {
+    console.log("this is a middleware");
 
-    // Effectuer vos opérations
+    const auth = request.headers.authorization;
+    console.log(auth);
 
-    // Essayer de les commit
-    await db.commit();
-  } catch {
-    // S'il y a eu une exception, rollback
-    await db.rollback();
-  }
-
-```
-
-## Exercice 1 : CRUD
-
-Complétez les autres fonctions CRUD pour un utilisateur :
-
-* `GET /user/:userId` : récupérer juste la ligne de l'utilisateur en format `IUser`
-* `PUT /user/:userId` : mettre à jour une ligne précise
-* `DELETE /user/:userId` : supprimer l'utilisateur
-
-Créez une suite de tests dans Postman afin de valider votre API.
-
-<details>
-
-<summary>Solution</summary>
-
-La solution entière se trouve [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/001-basic-crud-routes-express).
-
-On commence par créer un **Router** dans express qui gère la sous-route `/:userId` :
-
-```ts
-const routerSingle = Router({ mergeParams: true });
-
-// Router user existe déjà, on ajoute la sous-route
-routerUser.use('/:userId', routerSingle);
-```
-
-
-Ensuite, gérons les différentes méthodes.
-
-La méthode `GET /:userId` : 
-
-```ts
-routerSingle.get<{ userId: string }, IUserRO, {}>('',
-  async (request, response, next: NextFunction) => {
-    try {
-      // ATTENTION ! Valider que le userId est valable ?
-      const userId = request.params.userId;
-
-      const db = DB.Connection;
-      // Récupérer les lignes
-      const data = await db.query<IUserRO[] & RowDataPacket[]>("select userId, familyName, givenName, email from user where userId = ?", [userId]);      
-
-      // ATTENTION ! Que faire si le nombre de lignes est zéro ?
-      const res = data[0][0];
-        
-      response.json(res);
-
-    } catch (err: any) {
-      next(err);
+    if (!auth || auth !== 'Bearer 12345') {
+      next("Unidentified user!");
+      return;
     }
+
+
+    next();
   }
-);
+)
 ```
 
-La méthode `PUT /:userId` : 
+Cette fonction sera appelé systématiquement avant **tous les endpoints** de ce router !
 
-```ts
-routerSingle.put<{ userId: string }, IUpdateResponse, IUser>('',
-  async (request, response, next: NextFunction) => {
-    try {
-      // ATTENTION ! Valider que le userId est valable ?
-      const userId = request.params.userId;
-      const body = request.body;
+Middlewares doivent obligatoirement signaler quand ils ont finis :
 
-      const db = DB.Connection;
-      // Récupérer les lignes
-      const data = await db.query<OkPacket>(`update user set ? where userId = ?`, [body, userId]);
+- en invoquant la fonction `next()`, sans paramètre quand tout s'est bien passé
+- en invoquant la fonction `next('message')`, avec un paramètre, quand il y a une erreur. Le paramètre  contient de l'information sur l'erreur 
 
-      // Construire la réponse
-      const res = {
-        id: userId,
-        rows: data[0].affectedRows
-      }
-        
-      response.json(res);
+Si on oublie d'appeler `next()` notre serveur va bloquer dans cette fonction et ne jamais avancer.
 
-    } catch (err: any) {
-      next(err);
-    }
-  }
-);
-```
+{% hint style="success" %}
+Mettez en commentaire votre middleware pour le moment, après l'avoir essayé. Pour l'instant, nous ne l'utiliserons pas.
+{% endhint %}
 
-La méthode `DELETE /:userId` : 
-
-```ts
-routerSingle.delete<{ userId: string }, IDeleteResponse, {}>('',
-  async (request, response, next: NextFunction) => {
-    try {
-      // ATTENTION ! Valider que le userId est valable ?
-      const userId = request.params.userId;
-      const db = DB.Connection;
-
-      // Récupérer les lignes
-      const data = await db.query<OkPacket>(`delete from user where userId = ?`, [ userId ]);      
-
-      // Construire la réponse
-      const res = {
-        id: userId,
-        rows: data[0].affectedRows
-      }
-        
-      response.json(res);
-
-    } catch (err: any) {
-      next(err);
-    }
-  }
-);
-```
-
-
-</details>
-
-## Exercice 2 : Erreurs
+## Exercice (facultatif) : Erreurs
 
 Essayez de rentrer des mauvaises informations via Postman :
 
@@ -661,11 +523,5 @@ app.use(DefaultErrorHandler);
 
 </details>
 
-## Exercice 3 : Remanier
 
-Essayez d'ajouter une autre table à votre base, e.g. `repas` (vous pouvez vous inspirer de l'application nutrition).
-
-Ajoutez des endpoints CRUD pour cette table.
-
-Essayez au maximum de remanier votre code. Est-ce qu'il y a des éléments qu'on peut réutiliser pour les opérations CRUD classiques ?
 

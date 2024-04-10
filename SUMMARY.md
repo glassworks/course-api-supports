@@ -24,23 +24,24 @@
 * [Express](002-api/300-express.md)
 * [Le SGBDR](002-api/400-le-sgbdr.md)
 
-## Securisation de l'API
-
-* [Identité et autorisation](003-security/001-autorisation.md)
-* [Validation des données](003-security/010-validation.md)
-* [HTTPS](003-security/050-https.md)
-
-## Documentation
-
-* [Documentation](004-docs/001-documentation.md)
-
-## Gestion des fichiers
-
-* [Fichiers](005-files/001-fichiers.md)
-
-
 ## Mise en production
 
 * [GIT](007/005-git.md)
 * [Serveur](007/010-server.md)
 * [Docker](007/015-docker.md)
+
+## Aller plus loin
+
+### Securisation de l'API
+
+* [Identité et autorisation](003-security/001-autorisation.md)
+* [Validation des données](003-security/010-validation.md)
+* [HTTPS](003-security/050-https.md)
+
+### Documentation
+
+* [Documentation](004-docs/001-documentation.md)
+
+### Gestion des fichiers
+
+* [Fichiers](005-files/001-fichiers.md)
