@@ -62,7 +62,7 @@ version: '3.9'
 
 services:
   vscode_api:
-    image: rg.fr-par.scw.cloud/api-code-samples-vscode/vscode_api:1.0.0
+    image: rg.fr-par.scw.cloud/api-code-samples-vscode/vscode_api:2.0.0
     command: /bin/bash -c "while sleep 1000; do :; done"
     working_dir: /home/dev
     networks:
