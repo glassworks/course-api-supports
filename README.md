@@ -16,7 +16,7 @@ Aidez à l'amélioration des supports ! Si vous constatez une coquille, n'hésit
 
 ## Copyright
 
-Copyright © Kevin Glass 2023.
+Copyright © Kevin Glass 2025.
 
 La rédaction de ce programme a été faite par Kevin Glass, y compris la création des exemples, exercices, et données de test.
 

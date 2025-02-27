@@ -1,11 +1,11 @@
 # Express
 
-Express est une librairie simple, mais puissant pour la création d'un serveur avec NodeJS.
+[Express](https://expressjs.com) est une librairie simple, mais puissant pour la création d'un serveur avec NodeJS.
 
 Personnellement j'aime beaucoup pour les raisons suivantes :
 
 * Elle est **non-opinionated**, c'est-à-dire, je peux structurer comme je veux mes applications, sans avoir une structure imposée sur moi (comme Symfony etc). Ceci ouvre la possibilité d'erreurs, bien sûr, mais offre plus de flexibilité aussi.
-* Elle supporte toutes les fonctions d'un serveur :
+* Elle supporte toutes les fonctions d'un serveur REST :
   * Serve des fichiers statics
   * Répond à toutes les requêtes HTTP
   * La gestion des formulaires
@@ -22,7 +22,7 @@ Personnellement j'aime beaucoup pour les raisons suivantes :
 npm install express
 
 # Installer aussi les définitions des types pour express
-npm install @types/express
+npm install --save-dev @types/express
 ```
 
 Selon la librairie, on devrait parfois installer les définitions Typescript de la libraire. La convention est le préfixe "@types/" avant le nom de la librairie.
@@ -78,6 +78,8 @@ En lançant le serveur, je peux donc ouvrir un navigateur aux liens suivants :
 * [http://localhost:5050/helo](http://localhost:5050/helo)
 * [http://localhost:5050/public/grunter.JPG](http://localhost:5050/public/grunter.JPG)
 
+Vous pouvez trouver l'image `grunter.JPG` [ici](./grunter.JPG). Placez-la dans un dossier appelé `assets` à la racine de votre projet.
+
 ## Fondamentaux d'Express
 
 Comment Express fonctionne ?
@@ -86,8 +88,8 @@ D'abord, Express écoute des connexions TCP entrantes (en réalité, Express n'e
 
 Quand une nouvelle connexion est ouverte, la requête HTTP est interprétée pour ses différents composants :
 
-* La **METHODE** demandé par HTTP, `get`, `put`, `post`, etc.
-* Le **PATH**, ou le chemin indique dans l'URL (relatif au nom de demain ou adresse IP de votre serveur)
+* La **METHODE** demandé par HTTP, `GET`, `PUT`, `POST`, etc.
+* Le **URI**, relatif au nom de demain ou adresse IP de votre serveur
 
 Express gère la requête via des _callbacks_. Avant de lancer le serveur, nous allons dire à Express quelles méthodes HTTP à implémenter sur quels chemins, en fournissant une fonction qui est censé gérer la requête.
 

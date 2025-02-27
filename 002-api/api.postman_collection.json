@@ -1,0 +1,448 @@
+{
+	"info": {
+		"_postman_id": "a85aff8e-c33f-4bab-9c13-ef9d75849be1",
+		"name": "Course: API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1541882"
+	},
+	"item": [
+		{
+			"name": "Non-protégé",
+			"item": [
+				{
+					"name": "File",
+					"item": [
+						{
+							"name": "Upload User File",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Blah blah",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/Users/kevin/Documents/Projects/courses/api/api-supports.git/media/grunter.JPG"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{URL}}/user/1/file",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"user",
+										"1",
+										"file"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Download User File",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Blah blah",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{URL}}/user/1/file/2",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"user",
+										"1",
+										"file",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get all files",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Blah blah",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{URL}}/user/1/file",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"user",
+										"1",
+										"file"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "/user",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"kevin@nguni.fr\",\n    \"givenName\": 123456,\n    \"familyName\": \"Glass\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user/:userId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/user/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user/:userId",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/user/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user/:userId",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{    \n    \"givenName\": \"Kevin\",\n    \"familyName\": \"Glasster\",\n    \"email\": \"bob@buulder.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/user/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "/auth/login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"kevin@nguni.fr\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/authorize",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/auth/authorize?jwt=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0MDY1ODQwMSwiZXhwIjoxNzQwNjYwMjAxLCJhdWQiOiJhcGktZW1haWwtbGluayIsImlzcyI6ImFwaS1hdXRoIn0.GNuqIHEawUMdde5N-y-5nqlIRaJMObTyQD-j9nfju0mcFADhgfIK-YFf1CXIJsDN4x3GBUqPRU24irjgUIcF1dtvQEi3uKfB5uoYTEVgVAXuCqFQ8eHQFt9--3lzljPjYVjElj3ksXOhsSndf8Be_F2geYtlR6RDEeNQjKzyknzcT8JMyRvWdC_O-PcSZEaj6FXTSsAoprHdvr-wMgddnH5pXHlPblceLMatL4g3LmjUOIOiWEtWNBk2286dJz1WQlL_jrxFjVDK_KrsFwobSC8Nb5C-m55fLMnpOmRAXAcEbNQp4JpKquTii0D1FQjsUxtUHsY5GPmp7wADD5jP7A",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "jwt",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0MDY1ODQwMSwiZXhwIjoxNzQwNjYwMjAxLCJhdWQiOiJhcGktZW1haWwtbGluayIsImlzcyI6ImFwaS1hdXRoIn0.GNuqIHEawUMdde5N-y-5nqlIRaJMObTyQD-j9nfju0mcFADhgfIK-YFf1CXIJsDN4x3GBUqPRU24irjgUIcF1dtvQEi3uKfB5uoYTEVgVAXuCqFQ8eHQFt9--3lzljPjYVjElj3ksXOhsSndf8Be_F2geYtlR6RDEeNQjKzyknzcT8JMyRvWdC_O-PcSZEaj6FXTSsAoprHdvr-wMgddnH5pXHlPblceLMatL4g3LmjUOIOiWEtWNBk2286dJz1WQlL_jrxFjVDK_KrsFwobSC8Nb5C-m55fLMnpOmRAXAcEbNQp4JpKquTii0D1FQjsUxtUHsY5GPmp7wADD5jP7A"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authorized",
+			"item": [
+				{
+					"name": "/user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user/:userId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/user/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"bob@builder.fr\",\n    \"givenName\": \"Spongebob\",\n    \"familyName\": \"Squarepants\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user/:userId",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/user/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user/:userId",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{    \n    \"givenName\": \"Kevin\",\n    \"familyName\": \"Glasster\",\n    \"email\": \"bob@buulder.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/user/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "http://127.0.0.1:5050",
+			"type": "string"
+		},
+		{
+			"key": "ACCESS_TOKEN",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0MDU5Mzc4OSwiZXhwIjoxNzQwNjM2OTg5LCJhdWQiOiJhcGktYWNjZXNzIiwiaXNzIjoiYXBpLWF1dGgifQ.RbPxesj_XJ2EfjPTjH8s5blQkMLmVduHU52lKtaqWKhmOmLsdbKEvKiCEWZnh3sbMi4hfRFBRzCXpnsdoOQpQC0V31PQT8bTp3BcWAff6jz4UEVvkWgfz2vNgfKGZ5ouiy_P63XNqwARpNmV0aKcHfAsv-bLeoq4DJctf3X4QNJjS3iWX_nqk0ivwcV1wT_1LOmuioiUGu4b4mKxP4igfzn6pdbQA2DHhzSssBoiCBWvgNKmsCcVhdc_NDONoQ1ViaPVd9PmRd-V5OJTabpOWCt9iKPKW2vLuXIkxAfHbfrLYKwHFZbty2AEE9PX_0q2-cwy-9Qc1t-hw8GkEykM9A",
+			"type": "string"
+		}
+	]
+}

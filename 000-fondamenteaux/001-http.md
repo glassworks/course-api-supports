@@ -32,7 +32,7 @@ Content-Type: application/json
 Ce flux de texte se compose en *lignes* séparées par des nouvelles lignes. 
 
 - Première ligne : `ACTION` suivi par la ressource demandée (en forme d'url), suivi par la version du protocole 
-- Lignes suivantes : une série d'entêtes en forme `CLE : VALEUR`
+- Lignes suivantes : une série d'entêtes en forme `CLÉ: VALEUR`
 - Une ligne vide qui signale la fin de l'entête et le début des données
 - Les données
 
@@ -84,7 +84,7 @@ Pendant l'interpretation des méthodes `GET` et `DELETE`, les **corps du message
 
 ## URL
 
-Le URL, ou **Uniform Resource Locator**  spécifie un chemin unique vers une ressource sur ce serveur. Généralement, le chemin unique est séparé par des barres obliques.
+Le URL, ou **Uniform Resource Locator**  spécifie un chemin unique vers une ressource sur ce serveur. Généralement, le chemin unique est séparé par des slash (`/`).
 
 Le serveur doit savoir comment interpréter ce chemin pour récupérer les données associées (ou les mettre à jour, si la méthode est POST, PUT ou PATCH).
 
@@ -105,7 +105,7 @@ Les en-têtes fournissent des métadonnées sur la demande. Il existe de nombreu
 
 Le corps du message peut contenir n'importe quel type de données textuelles, binaires ou autres. Lorsque nous créons ou mettons à jour des données sur le serveur, nous envoyons généralement ces données dans le corps du message, car elles peuvent être volumineuses.
 
-Most modern APIs will either use FormData, JSON or XML format in the message body.
+La plupart des API modernes utilisent le format FormData, JSON ou XML dans le corps du message.
 
 Un exemple de JSON :
 

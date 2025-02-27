@@ -1,11 +1,10 @@
 # Le SGBDR
 
-
 On veut maintenant établir une connexion à une base de données, et commencer à ajouter et supprimer les lignes au travers de notre API.
 
 ## Dev Container et `docker-compose.yml`
 
-On peut directement inclure une instance d'un SGBDR à notre dev-container grâce à docker :
+On peut directement inclure une instance d'un SGBDR à notre dev-container grâce à Docker :
 
 {% code title="docker-compose.dev.yml" lineNumbers="true" %}
 ```yml
@@ -25,7 +24,7 @@ On peut directement inclure une instance d'un SGBDR à notre dev-container grâc
       "--collation-server=utf8mb4_unicode_ci",
     ]
     volumes:
-      - ./dbms/dbms-data:/var/lib/mysql
+      - ./.data:/var/lib/mysql
     networks:
       - api-network
 ```
@@ -67,7 +66,7 @@ notre script réutilisable dans le future, même si la base existe déjà
 create database IF NOT EXISTS school;
 
 /* Créer l'utilisateur API */
-create user IF NOT EXISTS 'api-dev'@'%.%.%.%' identified by 'apipassword';
+create user IF NOT EXISTS 'api-dev'@'%.%.%.%' identified by 'api-dev-password';
 grant select, update, insert, delete on school.* to 'api-dev'@'%.%.%.%';
 flush privileges;
 
@@ -103,9 +102,9 @@ npm install mysql2
 
 Normalement, notre API va ouvrir une connexion unique auprès du SGBDR pour chaque requête en cours. Ceci peut être lourd et chronophage, donc le créateur de la librairie a prévu les **connection pools**. C'est-à-dire, on va essayer de réutiliser les connexions déjà ouvertes.
 
-Moi, je préfère créer une classe qui enveloppe l'objet principal, pour ne pas répéter du code :
+Moi, je préfère créer une classe qui enveloppe l'objet principal, pour ne pas répéter du code (dans `src/utility/ORM/DB.ts`):
 
-{% code title="utility/DB.ts" lineNumbers="true" %}
+{% code title="src/utility/ORM/DB.ts" lineNumbers="true" %}
 ```ts
 import mysql, { Pool } from 'mysql2/promise';
 
@@ -116,7 +115,7 @@ import mysql, { Pool } from 'mysql2/promise';
 export class DB {
 
   // Variable "static": une seule instance pour toutes les instances de la classe DB
-  private static POOL: Pool;
+  private static POOL: Pool|undefined;
 
   /**
    * Récupérer ou créer la connexion-pool.
@@ -127,11 +126,18 @@ export class DB {
         host: process.env.DB_HOST || 'dbms',
         user: process.env.DB_USER || 'api-dev',
         database: process.env.DB_DATABASE || 'school',
-        password: process.env.DB_PASSWORD || 'apipassword',  
+        password: process.env.DB_PASSWORD || 'api-dev-password',  
       });
     }
 
     return this.POOL;
+  }
+
+  static async Close() {
+    if (this.POOL) {
+      await this.POOL.end();
+      this.POOL = undefined;
+    }
   }
 
 }
@@ -148,7 +154,7 @@ Voici un exemple d'un set de **endpoints** pour la gestion de l'utilisateur :
 ```ts
 import { NextFunction, Request, Response, Router } from "express";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
-import { DB } from "../utility/DB";
+import { DB } from "../utility/ORM/DB";
 
 const router = Router({ mergeParams: true });
 
@@ -273,7 +279,7 @@ export const ROUTES_USER = router;
 
 ## Le formatage des requêtes SQL
 
-Comme toutes les librairies, on évite l'injection SQL en utilisant des fonctionnalités pour échapper les données :
+Comme toutes les librairies, on évite **l'injection SQL** en utilisant des fonctionnalités pour échapper les données :
 
 ```ts
 // On met les ?, puis on passe comme 2ème paramètre un tableau des données à injecter, dans l'ordre
@@ -387,147 +393,6 @@ Si on oublie d'appeler `next()` notre serveur va bloquer dans cette fonction et 
 {% hint style="success" %}
 Mettez en commentaire votre middleware pour le moment, après l'avoir essayé. Pour l'instant, nous ne l'utiliserons pas.
 {% endhint %}
-
-## Exercice (facultatif) : Erreurs
-
-Essayez de rentrer des mauvaises informations via Postman :
-
-* Créer un utilisateur doublon
-* Essayer de passer un champ qui n'est pas une colonne dans la base
-* Passer du texte dans le query param de la requête index (pour limit et offset)
-* Afficher, mettre à jour, ou supprimer un utilisateur qui n'existe pas
-
-Pour l'instant, on reçoit un message moche (pas en json) et pas très parlant dans Postman.
-
-Ajoutez un middleware qui gère les erreurs :
-
-* Renvoyez plutôt du json
-* Avoir au moins le champ suivants :
-  * `code` : le code HTTP approprié
-    * `400` : la requête est mauvaise (erreur dans les données entrantes)
-    * `401` : pas autorisé
-    * `404` : élément pas trouvé
-    * `500` : erreur interne (dernier recours)
-  * `structured` : un champ plus libre, mais plus structuré qui permettrait de localiser l'erreur coté front. Exemple :
-    * `params-invalid`
-    * `connection-error`
-    * `auth/unknown-email`
-  * `message`: un message humain décrivant l'erreur
-  * `data`: (optionnel) les données supplémentaires concernant l'erreur
-
-Astuce : il faut dire à express d'utiliser votre handler d'erreur avec `app.use(...)`. Votre handler doit avoir 4 paramètres dans le callback, le premier étant l'objet d'erreur.
-
-<details>
-
-<summary>Solution</summary>
-
-La solution entière se trouve [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/001-basic-crud-routes-express).
-
-D'abord, on crée une classe qui dérive de la classe générique de Javascript : `Error` 
-
-```ts
-import { ErrorCode } from './ErrorCode';
-import { StructuredErrors } from './StructuredErrors';
-
-
-export class ApiError extends Error {
-  constructor(public httpCode: ErrorCode, public structuredError: StructuredErrors, public errMessage: string, public errDetails?: any) {
-    super(errMessage)
-  }
-
-  get json() {
-    return {
-      code: this.httpCode,
-      structured: this.structuredError,
-      message: this.errMessage,
-      details: this.errDetails
-    }
-  }
-}
-
-```
-
-Cette classe contient notamment une fonction permettant d'exporter l'erreur en format JSON selon la description de ce problème. Les `code` et `structured` sont les énumérations des différentes possibilités :
-
-```ts
-// Les numéros de d'erreur standard de HTTP
-export enum ErrorCode {
-  NotFound = 404,
-  Unauthorized = 403,
-  BadRequest = 400,
-  TooManyRequests = 429,
-  InternalError = 500
-}
-```
-
-```ts
-// Les types d'erreur connus par notre API, permettant au consommateur de plus facile comprend ce qui s'est passé
-export type StructuredErrors = 
-  // SQL
-  'sql/failed' |  
-  'sql/not-found' |
-
-  // Crud
-  'validation/failed' | 
-    
-  // Authorization
-  'auth/unknown-email' |
-
-
-  // Default
-  'internal/unknown'
-;
-```
-
-Ensuite, nous allons rédiger un **handler** (middleware) qui prend 4 paramètres pour qu'Express l'utilise pour gérer des erreurs :
-
-
-```ts
-import { NextFunction, Request, Response } from 'express';
-import { ApiError } from '../utility/Error/ApiError';
-import { ErrorCode } from '../utility/Error/ErrorCode';
-
-
-export const DefaultErrorHandler = async (error: any, req: Request, res: Response, next: NextFunction) => {
-
-  console.log(error);
-  console.log(error.constructor.name);
-
-  let err = new ApiError(ErrorCode.InternalError, 'internal/unknown', 'An unknown internal error occurred');
-    
-  if (!!error) {
-    if (error instanceof ApiError) {
-      err = error;
-    } 
-    else if (!!error.sql) {
-      // Ceci est une erreur envoyé par la base de données. On va supposer une erreur de la part de l'utilisateur
-      // A faire : il est peut-être recommandé d'avoir un handler dédié aux erreurs SQL pour mieux trier celles qui sont de notre faute, et celles la faute de l'utilisateur.
-      err = new ApiError(ErrorCode.BadRequest, 'sql/failed', error.message, {
-        sqlState: error.sqlState,
-        sqlCode: error.code
-      });      
-      // A noter : on ne renvoie pas le SQL pour ne pas divulger les informations secrets
-    } else {
-      if (error.message) {
-        err.errMessage = error.message;
-      }
-    }
-  }
-  console.log(err.json);
-
-  res.status(err.httpCode).json(err.json);    
-}
-```
-
-Notez les paramètres de notre `DefaultErrorHandler`. On accepte comme premier paramètre une erreur inconnue. Ensuite, on construit l'erreur formatée à l'aide de notre classe `ApiError`. Enfin, on renvoie une réponse avec le code HTTP et le json représentant l'erreur.
-
-Utilisez le `DefaultErrorHandler` comme middleware sur votre serveur :
-
-```ts
-app.use(DefaultErrorHandler);
-```
-
-</details>
 
 
 

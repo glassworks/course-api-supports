@@ -21,12 +21,12 @@ VSCode s'attache à ce container de plusieurs façons :
 
 Pour accomplir tout cela, VSCode exige la présence d'un dossier `.devcontainer` à la racine du workspace.
 
-Nous commençons donc par créer ce dossier dans notre dossier de travail, et en ajoutant un fichier `devcontainer.json` dedans :
+Nous commençons donc par créer ce dossier dans notre dossier de travail, et en ajoutant un fichier `.devcontainer/devcontainer.json` dedans :
 
 {% code title=".devcontainer/devcontainer.json" lineNumbers="true" %}
 ```json
 {
-  "name": "NodeJS API",
+  "name": "API Code Samples",
   // Pointer vers notre docker-compose.dev.yml
   "dockerComposeFile": [
     "../docker-compose.dev.yml"
@@ -38,11 +38,7 @@ Nous commençons donc par créer ce dossier dans notre dossier de travail, et en
   // Set *default* container specific settings.json values on container create.
   "customizations": {
     "settings": {},
-    "extensions": [
-      "pmneo.tsimporter",
-      "stringham.move-ts",
-      "rbbit.typescript-hero",      
-    ]
+    "extensions": []
   },
   // Quelques extensions VSCode à inclure par défaut pour notre projet 
   "forwardPorts": [ 5050 ]
@@ -58,22 +54,18 @@ Pour le moment, nous créons uniquement le service pour VSCode, qui doit porter 
 
 {% code title="docker-compose.dev.yml" lineNumbers="true" %}
 ```yaml
-version: '3.9'
-
 services:
   vscode_api:
-    image: rg.fr-par.scw.cloud/api-code-samples-vscode/vscode_api:2.0.0
+    image: rg.fr-par.scw.cloud/api-code-samples-vscode/vscode_api:2.0.1
     command: /bin/bash -c "while sleep 1000; do :; done"
     working_dir: /home/dev
     networks:
       - api-network
     volumes:
       - ./:/home/dev:cached
-      
-networks:
-  api-network:
-    driver: bridge
-    name: api-network
+    labels:
+      api_logging: "true"      
+    
 ```
 {% endcode %}
 
@@ -93,24 +85,24 @@ Vous allez voir que NodeJS est déjà installé :
 
 ```bash
 node -v
-# v18.13.0
+# v20.18.0
 ```
 
 Au passage, nous avons installé **mycli** aussi, car on va travailler avec un SGBDR :
 
 ```bash
  mycli --version
- # Version: 1.23.2
+ # Version: 1.26.1
 ```
 
 Pour utiliser **typescript**, nous avons aussi ajouté **ts-node** et **typescript** comme commandes globales :
 
 ```bash
 ts-node -v
-# v10.9.1
+# v10.9.2
 
 tsc -v
-# Version 5.0.4
+# Version 5.7.3
 ```
 
 {% hint style="danger" %}
@@ -121,3 +113,68 @@ Si vous avez des difficultés à démarrer votre dev-container, essayez ce qui s
 - Redémarrez Docker
 - Redémarrez votre ordinateur
 {% endhint %}
+
+
+## L'image Docker
+
+**Remarque : il n'est pas nécessaire d'effectuer les étapes de cette section, elles sont fournies à titre d'information.**
+
+Le conteneur de développement ci-dessus utilise une image Docker que j'ai préparée pour vous : `rg.fr-par.scw.cloud/api-code-samples-vscode/vscode_api`
+
+Pour créer cette image, j'ai d'abord écrit un Dockerfile, décrivant exactement comment je souhaitais que l'image se présente :
+
+```Dockerfile
+FROM node:20
+
+# Créer l'utilisateur et son groupe, installer des paquets
+RUN apt-get update \
+    && rm /var/lib/dpkg/info/libc-bin.* \
+    && apt-get clean \
+    && apt-get update \
+    && apt install -y libc-bin \     
+    && apt-get install -y sudo \
+    && apt-get install -y less \
+    && apt-get install -y mycli \
+    && apt-get install -y tzdata \    
+    && npm install -g typescript \
+    && npm install -g ts-node
+
+# Fixer le fuseau horaire
+ENV TZ=Europe/Paris
+
+# L'interprète par défaut
+ENV SHELL=/bin/bash
+
+# Le repertoire maison par défaut
+WORKDIR /home/dev
+
+RUN /bin/bash
+```
+
+Comme vous pouvez le voir, j'ai basé l'image sur une image `node` récente, qui est une image basée sur Ubuntu avec NodeJS déjà installé.
+
+J'installe ensuite un certain nombre de paquets supplémentaires que j'utiliserai souvent. Je règle le fuseau horaire et le répertoire de travail.
+De cette manière, tous les développeurs de mon équipe partagent la même configuration de développement.
+
+Ensuite, je construis l'image et je la déploie dans mon registre de conteneurs :
+
+```bash
+# Terminal ouvert dans le même repertoire que le Dockerfile
+
+# Build l'image en local pour les architectures amd64 et arm64 (MacOS Silicon)
+docker buildx build --platform linux/amd64,linux/arm64  -t api_dev_vscode -f ./Dockerfile .
+
+# Trouver l'image
+docker image ls | grep "api_dev_vscode"  
+
+# Retagger l'image avec l'adresse du repo at le numéro de version
+# Remplacer `api-code-samplesgit-vscode_api`  avec le bon nom d'image trouvé dans l'étape précédente
+docker tag api_dev_vscode rg.fr-par.scw.cloud/api-code-samples-vscode/vscode_api:2.0.1
+
+# Créer une clé de connexion chez votre fournisseur Container Registry: moi, j'utilise Scaleway
+SCW_SECRET_KEY=
+docker login rg.fr-par.scw.cloud/api-code-samples-vscode -u nologin --password-stdin <<< "$SCW_SECRET_KEY"
+
+# Envoyer l'image dans le dépôt docker sur Scaleway
+docker push rg.fr-par.scw.cloud/api-code-samples-vscode/vscode_api:2.0.1
+``````

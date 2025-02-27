@@ -4,7 +4,7 @@ Qu'est-ce qu'une API ?
 
 En anglais, API signifie **Application Programming Interface**, ce qui signifie que c'est l'*interface* qu'un développeur crée pour nous permettre d'accéder à ses systèmes.
 
-Imaginez un logiciel comme une boîte noire, qui possède en interne toutes ses fonctions, ses procédures, ses classes, sa logique commerciale, son accès aux bases de données, etc. Le développeur de cette boîte noire ne veut pas nécessairement que nous sachions comment elle fonctionne.
+Imaginez un logiciel comme une boîte noire, qui possède en interne toutes ses fonctions, ses procédures, ses classes, sa logique commerciale, son accès aux bases de données, etc.
 
 Le développeur de cette boîte noire ne souhaite pas nécessairement que nous sachions comment elle fonctionne. Mais il se peut que nous ayons besoin de récupérer certaines informations de la boîte noire, de lui envoyer des données ou de lui demander d'effectuer une tâche.
 
