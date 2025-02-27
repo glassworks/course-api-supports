@@ -16,7 +16,7 @@ La partie JSON du JWT contient un champ d'expiration, ce qui signifie que le JWT
 
 {% hint style="warning" %}
 
-All fields in a JWT are plain-text and can be read by anyone! Never send sensitive information via a JWT!
+Tous les champs d'un JWT sont en texte clair et peuvent être lus par n'importe qui ! N'envoyez jamais d'informations sensibles via un JWT !
 
 {% endhint %}
 
@@ -27,7 +27,7 @@ All fields in a JWT are plain-text and can be read by anyone! Never send sensiti
 {% endhint %}
 
 
-## Identity flow
+## Flux d'identité
 
 Mettons en place un flux d'identité sans mot de passe. 
 - Un utilisateur s'identifie à l'aide de son adresse électronique. Nous aurons besoin d'un point de terminaison tel que `POST /auth/login` pour cela
@@ -122,11 +122,10 @@ export class JWT {
   }
 }
 ```
-
-There are multiple points to note: 
-- we first use environnement variables for recovering our signing keys, falling back to local stored ones on the disk. This allows for providing a unique set for use only in production
-- Our key uses RS256 encryption. You may use other, stronger encryption algorithms such as ES256, but you must generate signing keys that correspond.
-- We throw 401 errors if the JWT could not be validated, but providing more information about whether the token was expired  (`token/expired`) or just invalid (`token/invalid`).
+Il y a plusieurs points à noter :
+- nous utilisons d'abord des variables d'environnement pour récupérer nos clés de signature, en revenant à celles stockées localement sur le disque. Cela permet de fournir un jeu unique qui ne sera utilisé qu'en production
+- notre clé utilise le cryptage RS256. Vous pouvez utiliser d'autres algorithmes de chiffrement plus puissants, tels que ES256, mais vous devez générer des clés de signature correspondantes.
+- nous envoyons des erreurs 401 si le JWT n'a pas pu être validé, mais en fournissant plus d'informations pour savoir si le jeton a expiré (token/expired) ou s'il est simplement invalide (token/invalid).
 
 ## Mailing
 

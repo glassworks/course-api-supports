@@ -313,38 +313,5 @@ On peut simplifier alors notre `package.json`, car `nodemon.json` est automatiqu
     ...
 ```
 
-## Déploiement
-
-Il y a quelques fichiers de plus à ajouter à notre configuration de déploiement, notamment le dossier `public` qui contient le `swagger.json`.
-
-En bref, il faut copier le dossier `public` dans le dossier `build` après la compilation. Pour cela, on utilise la librairie `copyfiles` :
-
-```
-# outil pour copier les fichiers et dossiers
-npm install --save-dev copyfiles
-```
-
-On modifier notre `package.json` ainsi :
-
-```json
- /* package.json */
-
-  ...
-  "scripts": {
-    "api": "nodemon",
-    "swagger": "tsoa spec-and-routes",
-    /* Supprimer l'ancien build */
-    "clean": "rimraf build",
-    /* Clean, puis générer les fichiers swagger et routes, puis compiler avec tsc, puis copier le dossier public dans build */
-    "build": "npm run clean && npm run swagger && tsc && copyfiles public/**/* build/"
-  },
-
-```
-
-Pour compiler une version de déploiement, il faut juste émettre dans le terminal :
-
-```bash
-npm run build
-```
 
 

@@ -1,6 +1,7 @@
 # Structurer l'application
 
-Let us start creating a bit of structure in our server.
+Let us Commençons par créer un peu de structure dans notre serveur.
+ creating a bit of structure in our server.
 
 Créons quelques repertoires dans `src` :
 
@@ -237,7 +238,7 @@ grant select, update, insert, delete on school.* to 'api-dev'@'%.%.%.%';
 flush privileges;
 ```
 
-Ensuite, le DDL (Data Definition Language) qui implémente notre schema dans MariaDB :
+Ensuite, le DDL (Data Definition Language) qui implémente notre schema dans MariaDB  (`src/model/schema/ddl.sql`)::
 
 ```sql
 

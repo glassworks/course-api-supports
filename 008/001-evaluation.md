@@ -39,13 +39,23 @@ La notation suivante sera utilisée :
 |--|--|
 | Conteneur Docker fonctionnel | 1 |
 | `/info` fonctionne, avec une connexion à la base de données | 1 |
-| Routes CRUD REST-ful pour les films | 5 |
+| Routes CRUD REST-ful pour les films (+ docs) | 5 |
 | Pagination sur la liste des films | 2 |
 | Itinéraires REST-ful pour les acteurs de chaque filme | 2 |
 | Téléchargement d'images de couvertures de films | 2 |
 | GraphQL pour les films et les acteurs | 2 |
-| Sécurité | 3 |
+| Sécurité et utilisation correct des JWT | 2 |
+| Getion du refresh-token | 1 |
 | RBAC | 2 |
+
+
+Tous les points seront évalués en prenant en compte l'ensemble des notions dont ont avait parlé pendant le cours :
+
+- est-ce qu'il y a une documentation claire et disponible (et automatique) ?
+- est-ce qu'il y a des logs informatifs et pertinents ?
+- est-ce qu'on a optimisé en fonction du temps, poids, utilisations des ressources (RAM, bande-passante, ...)
+- est-ce que l'API est "stateless" ?
+- ...
 
 
 

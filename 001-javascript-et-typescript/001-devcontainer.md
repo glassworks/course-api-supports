@@ -6,7 +6,7 @@ Avant la création de notre API, il serait intéressant de créer un environneme
 * indépendant du système d'exploitation
 * contient le set de dépendances du projet (les versions des paquets par exemple)
 
-Notamment, nous allons créer un API avec NodeJS (v.18) qui tourne en Ubuntu Linux (bullseye).
+Notamment, nous allons créer un API avec NodeJS (v.20) qui tourne en Ubuntu Linux (bullseye).
 
 Nous utilisons Docker et VSCode afin de satisfaire ces demandes via leur [Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers).
 
