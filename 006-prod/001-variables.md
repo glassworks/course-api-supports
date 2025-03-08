@@ -1,6 +1,6 @@
 # Variables d'environnement
 
-> Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/007-deploy-monitor)
+> Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech/courses/api/api-code-samples/-/tree/007-deploy-monitor)
 
 Nous avons déjà testé une mise en prod de notre API [ici](../003-security/050-https.md).
 

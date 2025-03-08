@@ -118,5 +118,5 @@ routerIndex.post<{}, ICreateResponse, IUser>('',
 
 Testez vous-même la route en omettant, par exemple, l'adresse e-mail. Vous allez voir qu'un message est émis qui contient toutes les informations concernant les données manquantes ou erronées.
 
-Un exemple complet qui ajoute de la validation sur les endpoints de création et mise à jour d'un `User` se trouve ici : [https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/003-data-validation](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/003-data-validation)
+Un exemple complet qui ajoute de la validation sur les endpoints de création et mise à jour d'un `User` se trouve ici : [https://dev.glassworks.tech/courses/api/api-code-samples/-/tree/003-data-validation](https://dev.glassworks.tech/courses/api/api-code-samples/-/tree/003-data-validation)
 

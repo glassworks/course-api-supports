@@ -9,7 +9,7 @@ Amazon a eu énormément de succès avec leur protocole S3 pour le stockage "d'o
 
 Le principe est qu'on stocke un "objet" (un fichier) sous un chemin textuel, mais on n'a aucun détail concernant l'emplacement disque etc. Il y a un protocole HTTP qui permet d'envoyer des objets, récupérer des objets, les supprimer ou les interroger (pour de la meta-data).
 
-> Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/006-files)
+> Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech/courses/api/api-code-samples/-/tree/006-files)
 
 ## Buckets chez Scaleway
 

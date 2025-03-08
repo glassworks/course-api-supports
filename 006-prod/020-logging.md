@@ -1,6 +1,6 @@
 # Stack de logging
 
-> Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/007-deploy-monitor)
+> Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech/courses/api/api-code-samples/-/tree/007-deploy-monitor)
 
 Il est essentiel que l'on puisse suivre les logs générés par notre API. Bien sûr, il est possible juste de se connecter à l'instance qui tourne notre API, puis :
 

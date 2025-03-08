@@ -28,7 +28,7 @@ Par contre, `tsoa` est un framework qui est _opinionated_. On est obligé de str
 Mince ! On est allé un peu trop loin de la *remaniage* de notre code - il faudrait repasser un modèle orienté objet.
 
 
-> Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/005-docs)
+> Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech/courses/api/api-code-samples/-/tree/005-docs)
 
 ## Installer `tsoa`
 

@@ -300,7 +300,7 @@ Mettez en place ce flux avec les contraintes suivantes :
 
 <summary>Solution</summary>
 
-La solution complète se trouve [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/002-magic-link-authorisation).
+La solution complète se trouve [ici](https://dev.glassworks.tech/courses/api/api-code-samples/-/tree/002-magic-link-authorisation).
 
 Notez bien :
 

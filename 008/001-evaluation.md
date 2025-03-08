@@ -2,7 +2,7 @@
 
 Nous sommes en train de créer une API pour le système d'hébergement d'un magasin de location de vidéos.
 
-Vous pouvez trouver le schéma de la base de données et des exemples de données ici : [SAKILA](https://dev.glassworks.tech:18081/courses/sgbdr/sgbdr-supports/-/tree/main/src/samples/sakila)
+Vous pouvez trouver le schéma de la base de données et des exemples de données ici : [SAKILA](https://dev.glassworks.tech/courses/sgbdr/sgbdr-supports/-/tree/main/src/samples/sakila)
 
 Démontrez vos compétences dans la création d'une API avec la spécification suivante :
 

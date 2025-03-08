@@ -1,6 +1,6 @@
 # Logs
 
-> Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/007-deploy-monitor)
+> Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech/courses/api/api-code-samples/-/tree/007-deploy-monitor)
 
 
 Nous allons préparer notre API pour déploiement en lui donnant une façon de créer des journaux pertinents.

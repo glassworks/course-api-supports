@@ -8,7 +8,7 @@ Nous allons sécuriser notre API en utilisant un **reverse proxy** :
 - Notre API NodeJS va écouter sur un port sur notre réseau interne (pas accessible au public). Il accepte les connexions de notre serveur Apache.
 
 
-> Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech:18081/courses/api/api-code-samples/-/tree/004-https)
+> Vous trouverez le projet fonctionnel de ce chapitre [ici](https://dev.glassworks.tech/courses/api/api-code-samples/-/tree/004-https)
 
 ## Un reverse proxy en local
 
