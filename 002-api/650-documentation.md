@@ -26,7 +26,7 @@ Un fichier `swagger.json` et disponible dans le dossier `public`. Ce fichier pou
 
 ```bash
 npm install swagger-ui-express
-npm install --save-dev @types/swagger-ui-express`
+npm install --save-dev @types/swagger-ui-express
 ```
 
 Dans notre fichier `server.ts`, on ajoute des lignes pour servir ce contenu :
