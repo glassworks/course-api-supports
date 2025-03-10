@@ -142,7 +142,7 @@ Je vous laisse créer votre compte gratuit. Je vous laisse créer votre compte g
 npm install node-mailjet
 ```
 
-Ensuite, créons un outil dans `utility` qui enverra un email contenant le JWT, dans src/utility/email/Emailer.ts : 
+Ensuite, créons un outil dans `utility` qui enverra un email contenant le JWT, dans `src/utility/email/Emailer.ts` : 
 
 
 ```ts
