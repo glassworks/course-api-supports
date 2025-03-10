@@ -168,8 +168,8 @@ export class Emailer {
       Messages: [
         {
           From: {
-            Email: process.env.MJ_EMAIL_FROM || 'kevin@nguni.fr',
-            Name: process.env.MJ_EMAIL_NAME || 'Kevin'
+            Email: process.env.MJ_EMAIL_FROM || 'votre_adress_email@ecole.fr',
+            Name: process.env.MJ_EMAIL_NAME || 'Votre nom'
           },
           To: [
             {
