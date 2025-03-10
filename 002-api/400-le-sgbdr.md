@@ -13,7 +13,6 @@ On peut directement inclure une instance d'un SGBDR à notre dev-container grâc
   dbms:
     image: mariadb
     restart: always
-    container_name: my_sql_database
     ports:
       - "3309:3306"
     environment: 
