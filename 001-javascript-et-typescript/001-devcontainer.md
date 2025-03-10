@@ -66,6 +66,11 @@ services:
     labels:
       api_logging: "true"      
     
+
+networks:
+  api-network:
+    driver: bridge
+    name: api-network
 ```
 {% endcode %}
 
