@@ -126,7 +126,7 @@ export interface IApiError {
 }
 ```
 
-Le `code` est une énumération des différentes possibilités, dans `src/utility/error/ErrorCodes.ts` :
+Le `code` est une énumération des différentes possibilités, dans `src/utility/error/ErrorCode.ts` :
 
 ```ts
 // Les numéros de d'erreur standard de HTTP
@@ -140,7 +140,7 @@ export enum ErrorCode {
 }
 ```
 
-Ensuite, nous allons rédiger un **middleware** qui prend 4 paramètres pour qu'Express l'utilise pour gérer des erreurs (dans `src/utility/Error/error-handler.middleware.ts`) :
+Ensuite, nous allons rédiger un **middleware** qui prend 4 paramètres pour qu'Express l'utilise pour gérer des erreurs (dans `src/utility/error/error-handler.middleware.ts`) :
 
 
 ```ts

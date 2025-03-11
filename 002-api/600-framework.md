@@ -314,4 +314,7 @@ On peut simplifier alors notre `package.json`, car `nodemon.json` est automatiqu
 ```
 
 
+## Faire le menage
+
+Nous avons maintenant remplacé notre ancien `user.route.ts` par un contrôleur qui est automatiquement compilé dans les routes Express. Nous pouvons donc supprimer cet ancien fichier, et supprimer la référence à celui-ci dans `server.ts`
 
