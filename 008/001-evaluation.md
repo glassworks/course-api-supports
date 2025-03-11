@@ -45,7 +45,7 @@ La notation suivante sera utilisée :
 | Téléchargement d'images de couvertures de films | 2 |
 | GraphQL pour les films et les acteurs | 2 |
 | Sécurité et utilisation correct des JWT | 2 |
-| Getion du refresh-token | 1 |
+| Gestion du refresh-token | 1 |
 | RBAC | 2 |
 
 
