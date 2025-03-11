@@ -205,7 +205,7 @@ import { IORMCreateResponse, IORMIndexResponse } from '@orm/interfaces/IORM';
 import { ORM } from '@orm/ORM';
 import express from "express";
 import multer from "multer";
-import { Get, Middlewares, Path, Post, Query, Request, Route, SuccessResponse } from 'tsoa';
+import { Get, Middlewares, Path, Put, Query, Request, Route, SuccessResponse } from 'tsoa';
 import { ObjectStorage } from 'utility/storage/ObjectStorage';
 import { v4 } from 'uuid';
 
@@ -219,7 +219,7 @@ export class UserFileController {
    * Envoyer un fichier
    * @param userId Le ID de l'utilisateur
    */
-  @Post()
+  @Put()
   @Middlewares(multer().single("file"))
   public async uploadFile(@Path() userId: number, @Request() request: express.Request): Promise<IORMCreateResponse> {
     
