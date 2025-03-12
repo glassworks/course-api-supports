@@ -214,4 +214,4 @@ This would return
 
 Comme vous pouvez le constater, GraphQL offre un moyen très naturel d'accéder aux données !
 
-For a more in-depth analysis of the GraphQL standard, you may consult the very informative officiel website [https://graphql.org/learn/](https://graphql.org/learn/).
+Pour une analyse plus approfondie de la norme GraphQL, vous pouvez consulter le très instructif site officiel [https://graphql.org/learn/](https://graphql.org/learn/).

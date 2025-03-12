@@ -55,7 +55,7 @@ The default cors configuration allows all origins, according to the [documentati
 }
 ```
 
-Notez que d'autres services d'hébergement tels qu'Amazon, Google Cloud, etc. vous demanderont de définir une politique CORS afin d'autoriser les requêtes d'origine croisée sur les baquets de stockage.
+Notez que d'autres services d'hébergement tels qu'Amazon, Google Cloud, etc. vous demanderont de définir une politique CORS afin d'autoriser les requêtes d'origine croisée sur les buckets de stockage.
 
 
 ## Information sur l'API
