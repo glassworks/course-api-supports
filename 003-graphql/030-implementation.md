@@ -64,7 +64,7 @@ Nous avons donc toutes nos opérations CRUD pour l'entité `User`
 
 ## Résolveurs
 
-Un **resolver** peut être considéré comme l'implémentation réelle de nos requêtes et mutations. C'est ici que nous faisons le lien entre le schéma et notre base de données réelle.
+Un **resolver** peut être considéré comme l'implémentation réelle de nos requêtes et mutations. C'est ici que nous faisons le lien entre le schéma et notre base de données réelle. Voici une implementation à mettre dans `src/model/graphql/resolvers.graphql.ts` : 
 
 ```ts
 import { IUser, IUserCreate, IUserUpdate } from "@model/types/IUser";
