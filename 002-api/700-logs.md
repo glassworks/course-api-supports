@@ -134,7 +134,7 @@ Enfin on va attacher ce middleware à notre serveur (`src/server.ts`) :
 
 ```ts
 ...
-import { requestLogMiddleware } from "./utility/Logging/log.middleware";
+import { requestLogMiddleware } from "./utility/logging/log.middleware";
 
 // Récupérer le port des variables d'environnement ou préciser une valeur par défaut
 const PORT = process.env.PORT || 5050;

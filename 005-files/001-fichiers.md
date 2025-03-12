@@ -129,8 +129,8 @@ Dans notre projet, on crée un outil (**wrapper**) qui permet d'envoyer et récu
 import { GetObjectCommandInput, PutObjectCommandInput, S3 } from "@aws-sdk/client-s3";
 
 import { Readable } from 'stream';
-import { ApiError } from "./Error/ApiError";
-import { ErrorCode } from "./Error/ErrorCode";
+import { ApiError } from "./error/ApiError";
+import { ErrorCode } from "./error/ErrorCode";
 
 process.env.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID || "SCWTY6B680E3QQ9WM2V5";
 process.env.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY || "18856bfe-8260-4cfd-8802-389f943deccf";
@@ -216,8 +216,8 @@ import { IUserFile, IUserFileCreate } from '../model/User/IUserFile';
 import { ICreateResponse } from '../types/ICreateResponse';
 import { IIndexResponse } from '../types/IIndexQuery';
 import { Crud } from '../utility/Crud';
-import { ApiError } from '../utility/Error/ApiError';
-import { ErrorCode } from '../utility/Error/ErrorCode';
+import { ApiError } from '../utility/error/ApiError';
+import { ErrorCode } from '../utility/error/ErrorCode';
 import { ObjectStorage } from '../utility/ObjectStorage';
 
 /**

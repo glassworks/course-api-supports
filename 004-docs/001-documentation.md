@@ -281,8 +281,8 @@ Il faut donc convertir notre ancien middleware d'autorisation vers ce nouveau fi
 
 ```ts
 import { Request } from 'express';
-import { ApiError } from '../utility/Error/ApiError';
-import { ErrorCode } from '../utility/Error/ErrorCode';
+import { ApiError } from '../utility/error/ApiError';
+import { ErrorCode } from '../utility/error/ErrorCode';
 import { IAccessToken } from '../types/auth/IAccessToken';
 import { JWT } from '../utility/JWT';
 import { ACCESS_AUD, ISSUER } from '../routes/AuthController';

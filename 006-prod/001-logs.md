@@ -18,7 +18,7 @@ npm install @types/morgan
 
 ## Un outil de Log normalisé
 
-On crée un outil pour créer des journaux standardisé qui permet d'envoyer nos messages personnalisés bien formatés (dans `src/utility/Logging/Log.ts`):
+On crée un outil pour créer des journaux standardisé qui permet d'envoyer nos messages personnalisés bien formatés (dans `src/utility/logging/Log.ts`):
 
 ```ts
 import { LogTag } from './LogTag';
@@ -86,7 +86,7 @@ Le message sera redirigé où on veut, sur le format qu'on veut, selon l'environ
 
 ## Journaux des requêtes
 
-On crée aussi un **middleware** qui va émettre un log pour chaque requête géré par express (dans `src/utility/Logging/log.middleware.ts`):
+On crée aussi un **middleware** qui va émettre un log pour chaque requête géré par express (dans `src/utility/logging/log.middleware.ts`):
  :
 
 ```ts
@@ -142,7 +142,7 @@ import Express, { json } from "express";
 import swaggerUi from "swagger-ui-express";
 import { DefaultErrorHandler } from "./middleware/error-handler.middleware";
 import { RegisterRoutes } from './routes/routes';
-import { requestLogMiddleware } from "./utility/Logging/log.middleware";
+import { requestLogMiddleware } from "./utility/logging/log.middleware";
 
 
 // Récupérer le port des variables d'environnement ou préciser une valeur par défaut
