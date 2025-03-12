@@ -41,7 +41,7 @@ La notation suivante sera utilisée :
 | `/info` fonctionne, avec une connexion à la base de données | 1 |
 | Routes CRUD REST-ful pour les films (+ docs) | 5 |
 | Pagination sur la liste des films | 2 |
-| Route REST-ful pour les acteurs de chaque filme | 2 |
+| Route REST-ful pour les acteurs de chaque film | 2 |
 | Téléchargement d'images de couvertures de films | 2 |
 | GraphQL pour les films et les acteurs | 2 |
 | Sécurité et utilisation correct des JWT | 2 |
